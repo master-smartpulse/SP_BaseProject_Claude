@@ -1,0 +1,65 @@
+# Contrato de API: [NOME DA FEATURE]
+# Gerado pelo /plan (Fase 1) em specs/[###-feature]/contracts/ — um arquivo por recurso.
+# Convenções (constitution): paths e propriedades JSON em inglês (Regra Geral 5);
+# todo endpoint documentado antes da implementação (Princípio 4, API-First);
+# erros com corpo estruturado; paginação documentada quando houver listagem.
+openapi: 3.0.3
+info:
+  title: "[Feature] API"
+  version: 0.1.0
+paths:
+  /api/[resources]:
+    post:
+      summary: "[ação do usuário que este endpoint atende — rastreável a um RF-XXX da spec]"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateResourceRequest"
+      responses:
+        "201":
+          description: Criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceResponse"
+        "400":
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Não autenticado
+components:
+  schemas:
+    CreateResourceRequest:
+      type: object
+      required: [exampleField]
+      properties:
+        exampleField:
+          type: string
+          minLength: 1
+    ResourceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        exampleField:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string

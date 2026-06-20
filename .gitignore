@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Dependências
+node_modules/
+
+# Builds
+dist/
+build/
+.next/
+.expo/
+coverage/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Configuração local do Claude Code (por máquina — não versionar)
+.claude/settings.local.json
+
+# Logs
+*.log
