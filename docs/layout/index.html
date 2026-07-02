@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Diet · Pacote de handoff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  :root{ --green:#2C4A3B; --green-d:#1d3327; --gold:#A9824C; --gold-l:#CBA96B; --sand:#E7D3A6; --ink:#2E2A22; --mut:#8A7E68; --line:#E6DCC6; --cream:#FBF7EF; }
+  body{ font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); background:#EDE5D4; -webkit-font-smoothing:antialiased; }
+  .ms{ font-family:'Material Symbols Rounded'; font-weight:normal; line-height:1; display:inline-block; }
+  .serif{ font-family:'Spectral',serif; }
+  a{ text-decoration:none; color:inherit; }
+
+  /* HERO */
+  .hero{ background:radial-gradient(130% 110% at 78% 8%, #35594a 0%, #2C4A3B 42%, #1d3327 100%); color:#F4ECD8; padding:64px 32px 88px; position:relative; overflow:hidden; }
+  .hero .inner{ max-width:1080px; margin:0 auto; position:relative; z-index:2; }
+  .brand{ display:flex; align-items:center; gap:18px; margin-bottom:56px; }
+  .brand .mark{ width:64px; height:64px; border-radius:18px; background:linear-gradient(155deg,#2C4A3B,#21392d); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px -10px rgba(0,0,0,.5); border:1px solid rgba(231,211,166,.25); }
+  .brand .mark .ms{ font-size:36px; color:var(--sand); font-variation-settings:'FILL' 1; }
+  .brand .name{ font-family:'Spectral',serif; font-weight:800; font-size:26px; color:#F4ECD8; letter-spacing:.01em; }
+  .brand .tag{ font-size:11.5px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--sand); margin-top:3px; }
+  .hero .kick{ font-size:13px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--sand); }
+  .hero h1{ font-family:'Spectral',serif; font-weight:800; font-size:clamp(38px,6vw,68px); line-height:1.04; margin:16px 0 20px; max-width:16ch; letter-spacing:.005em; }
+  .hero p.lead{ font-size:18px; line-height:1.6; max-width:60ch; color:#e6dcc4; }
+  .hero .meta{ display:flex; flex-wrap:wrap; gap:10px; margin-top:32px; }
+  .hero .meta span{ font-size:12.5px; font-weight:600; padding:8px 15px; border-radius:999px; background:rgba(231,211,166,.12); border:1px solid rgba(231,211,166,.24); color:#f0e6cf; }
+  .leaf{ position:absolute; right:-60px; top:-40px; font-size:520px; color:rgba(231,211,166,.05); z-index:1; font-variation-settings:'FILL' 1; }
+
+  /* CONTENT */
+  main{ max-width:1080px; margin:-52px auto 0; padding:0 32px 100px; position:relative; z-index:3; }
+  .section-label{ font-size:12.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin:0 0 18px 4px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+  .card{ background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:30px; display:flex; flex-direction:column; box-shadow:0 2px 4px rgba(80,60,25,.05); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  .card:hover{ transform:translateY(-3px); box-shadow:0 18px 40px -22px rgba(60,45,20,.5); border-color:var(--gold-l); }
+  .card .icon{ width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+  .card .icon .ms{ font-size:28px; }
+  .card .num{ font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--mut); margin-bottom:6px; }
+  .card h3{ font-family:'Spectral',serif; font-weight:700; font-size:24px; color:var(--green); margin-bottom:8px; }
+  .card p{ font-size:14.5px; line-height:1.6; color:#5a5343; flex:1; }
+  .card .go{ display:inline-flex; align-items:center; gap:6px; margin-top:20px; font-size:13.5px; font-weight:700; color:var(--gold); }
+  .card .go .ms{ font-size:18px; transition:transform .18s ease; }
+  .card:hover .go .ms{ transform:translateX(4px); }
+  .card.feature{ grid-column:1 / -1; flex-direction:row; align-items:center; gap:32px; background:linear-gradient(150deg,#2C4A3B,#21392d); border-color:transparent; }
+  .card.feature h3{ color:#F4ECD8; font-size:28px; }
+  .card.feature p{ color:#d9cfb8; font-size:15.5px; }
+  .card.feature .num{ color:var(--sand); }
+  .card.feature .go{ color:var(--sand); }
+  .card.feature .icon{ background:rgba(231,211,166,.14); width:64px; height:64px; flex-shrink:0; }
+  .card.feature .icon .ms{ color:var(--sand); font-size:34px; }
+  .card.feature .body{ flex:1; }
+
+  .ic-green{ background:rgba(44,74,59,.1); } .ic-green .ms{ color:var(--green); }
+  .ic-gold{ background:rgba(169,130,76,.14); } .ic-gold .ms{ color:var(--gold); }
+
+  /* design system strip */
+  .ds{ margin-top:56px; background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:34px; }
+  .ds h3{ font-family:'Spectral',serif; font-weight:700; font-size:22px; color:var(--green); margin-bottom:6px; }
+  .ds .sub{ font-size:14px; color:var(--mut); margin-bottom:26px; }
+  .ds-row{ display:flex; flex-wrap:wrap; gap:28px; align-items:flex-start; }
+  .swatches{ display:flex; gap:12px; flex-wrap:wrap; }
+  .sw{ text-align:center; }
+  .sw .chip{ width:60px; height:60px; border-radius:14px; border:1px solid rgba(0,0,0,.06); box-shadow:0 3px 8px -4px rgba(60,45,20,.3); }
+  .sw .lbl{ font-size:10.5px; font-weight:600; color:var(--mut); margin-top:8px; letter-spacing:.02em; }
+  .type{ border-left:1px solid var(--line); padding-left:28px; }
+  .type .big{ font-family:'Spectral',serif; font-weight:800; font-size:34px; color:var(--green); line-height:1; }
+  .type .big small{ font-size:14px; font-weight:600; color:var(--mut); font-family:'Plus Jakarta Sans',sans-serif; }
+  .type .body-t{ font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:17px; color:var(--ink); margin-top:14px; }
+  .type .body-t small{ font-size:13px; font-weight:500; color:var(--mut); }
+
+  footer{ max-width:1080px; margin:0 auto; padding:10px 32px 60px; color:var(--mut); font-size:13px; }
+  footer .rule{ border-top:1px solid var(--line); padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+
+  @media (max-width:720px){
+    .grid{ grid-template-columns:1fr; }
+    .card.feature{ flex-direction:column; align-items:flex-start; }
+    .type{ border-left:none; padding-left:0; border-top:1px solid var(--line); padding-top:20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="ms leaf">spa</span>
+  <div class="inner">
+    <div class="brand">
+      <div class="mark"><span class="ms">spa</span></div>
+      <div>
+        <div class="name">Smart Diet</div>
+        <div class="tag">Nutrição inteligente</div>
+      </div>
+    </div>
+    <div class="kick">Pacote de handoff · Produto & Design</div>
+    <h1>CRM de nutrição com prontuário vivo pelo WhatsApp</h1>
+    <p class="lead">Tudo que a paciente envia pelo WhatsApp vira evento no prontuário, estruturado pela IA como rascunho — a nutricionista revisa e confirma. Este pacote reúne o protótipo navegável, a documentação de UX/UI, os fluxos e as regras de negócio.</p>
+    <div class="meta">
+      <span>Protótipo alta fidelidade</span>
+      <span>Persona: Marina Germano · CRN-3</span>
+      <span>PT-BR · Desktop</span>
+      <span>LGPD & CFN</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="section-label">Conteúdo do pacote</div>
+  <div class="grid">
+
+    <a class="card feature" href="01 - Protótipo navegável.html" target="_blank" rel="noopener">
+      <div class="icon"><span class="ms">devices</span></div>
+      <div class="body">
+        <div class="num">01 · PROTÓTIPO</div>
+        <h3>Protótipo navegável</h3>
+        <p>Aplicação interativa completa: dashboard, pacientes, perfil com timeline do WhatsApp, plano alimentar, prescrição & exames, evolução, agenda e financeiro. Filtros, revisão de IA e builder de plano funcionais. Abre direto no navegador, sem instalação.</p>
+        <span class="go">Abrir protótipo <span class="ms">arrow_forward</span></span>
+      </div>
+    </a>
+
+    <a class="card" href="02 - Documentação UX-UI.html">
+      <div class="icon ic-green"><span class="ms">design_services</span></div>
+      <div class="num">02 · DESIGN</div>
+      <h3>Documentação UX/UI</h3>
+      <p>Design system (paleta terrosa, Spectral + Plus Jakarta Sans, componentes), arquitetura de navegação, cada tela e módulo em detalhe, modais, micro-interações e parametrização.</p>
+      <span class="go">Ler documentação <span class="ms">arrow_forward</span></span>
+    </a>
+
+    <a class="card" href="03 - Fluxos e regras.html">
+      <div class="icon ic-gold"><span class="ms">account_tree</span></div>
+      <div class="num">03 · PRODUTO</div>
+      <h3>Fluxos & regras de negócio</h3>
+      <p>Jornadas do usuário (onboarding, registro por foto, check-in, consulta, prescrição), regras de negócio, conformidade LGPD/CFN, telas-referência e escopo por fase.</p>
+      <span class="go">Ver fluxos <span class="ms">arrow_forward</span></span>
+    </a>
+
+    <a class="card" href="marca/smart-diet-logo.png" target="_blank" rel="noopener">
+      <div class="icon ic-gold"><span class="ms">palette</span></div>
+      <div class="num">04 · MARCA</div>
+      <h3>Logos & identidade</h3>
+      <p>Logo principal horizontal e ícone circular (para foto de grupo/app) em PNG de alta resolução, na pasta <code style="font-family:ui-monospace,monospace;font-size:12px;background:#EFE7D6;color:#7a5a26;padding:1px 5px;border-radius:4px;">marca/</code>.</p>
+      <span class="go">Ver logo <span class="ms">arrow_forward</span></span>
+    </a>
+
+    <a class="card" href="imagens/01-arquitetura-mvp.png" target="_blank" rel="noopener">
+      <div class="icon ic-green"><span class="ms">schema</span></div>
+      <div class="num">05 · TÉCNICO</div>
+      <h3>Arquitetura & referências</h3>
+      <p>Diagrama da arquitetura do MVP (WhatsApp Cloud API → backend + IA → CRM) e o mockup de referência da tela de perfil, na pasta <code style="font-family:ui-monospace,monospace;font-size:12px;background:#EFE7D6;color:#7a5a26;padding:1px 5px;border-radius:4px;">imagens/</code>.</p>
+      <span class="go">Ver diagrama <span class="ms">arrow_forward</span></span>
+    </a>
+
+  </div>
+
+  <div class="ds">
+    <h3>Sistema visual</h3>
+    <div class="sub">Paleta terrosa/orgânica — saúde séria, não "fitness app".</div>
+    <div class="ds-row">
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#2C4A3B;"></div><div class="lbl">Verde<br>#2C4A3B</div></div>
+        <div class="sw"><div class="chip" style="background:#A9824C;"></div><div class="lbl">Dourado<br>#A9824C</div></div>
+        <div class="sw"><div class="chip" style="background:#E7D3A6;"></div><div class="lbl">Areia<br>#E7D3A6</div></div>
+        <div class="sw"><div class="chip" style="background:#FBF7EF;"></div><div class="lbl">Creme<br>#FBF7EF</div></div>
+        <div class="sw"><div class="chip" style="background:#EDE5D4;"></div><div class="lbl">Fundo<br>#EDE5D4</div></div>
+        <div class="sw"><div class="chip" style="background:#2E2A22;"></div><div class="lbl">Texto<br>#2E2A22</div></div>
+      </div>
+      <div class="type">
+        <div class="big">Spectral <small>— títulos & números</small></div>
+        <div class="body-t">Plus Jakarta Sans <small>— corpo, rótulos e UI</small></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="rule">
+    <span>Smart Diet · CRM de Nutrição — SaaS</span>
+    <span>Pacote de handoff · atualizado em jul/2026</span>
+  </div>
+</footer>
+
+</body>
+</html>

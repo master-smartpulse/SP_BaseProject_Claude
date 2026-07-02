@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentação UX/UI · Smart Diet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  :root{ --green:#2C4A3B; --gold:#A9824C; --gold-l:#CBA96B; --sand:#E7D3A6; --ink:#2E2A22; --mut:#8A7E68; --line:#E6DCC6; --cream:#FBF7EF; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); background:#EDE5D4; line-height:1.65; }
+  .wrap{ max-width:840px; margin:0 auto; padding:52px 28px 120px; background:var(--cream); margin-top:-20px; border-radius:16px 16px 0 0; box-shadow:0 -1px 0 var(--line); }
+  header.top{ background:linear-gradient(160deg,#2C4A3B,#1d3327); color:#F4ECD8; padding:44px 28px 40px; }
+  header.top .inner{ max-width:840px; margin:0 auto; }
+  header.top .home{ display:inline-flex; align-items:center; gap:8px; color:var(--sand); text-decoration:none; font-size:13px; font-weight:600; margin-bottom:26px; opacity:.85; }
+  header.top .home:hover{ opacity:1; }
+  header.top .kick{ font-size:12.5px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--sand); }
+  header.top h1{ font-family:'Spectral',serif; font-weight:800; font-size:44px; line-height:1.08; margin-top:12px; }
+  h2{ font-family:'Spectral',serif; font-weight:700; font-size:29px; color:var(--green); margin:52px 0 8px; padding-bottom:12px; border-bottom:2px solid var(--line); }
+  h3{ font-family:'Spectral',serif; font-weight:700; font-size:21px; color:var(--ink); margin:34px 0 6px; }
+  h4{ font-weight:700; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); margin:26px 0 4px; }
+  p{ margin:12px 0; color:#3a352b; }
+  strong{ color:var(--ink); font-weight:700; }
+  a{ color:var(--gold); }
+  hr{ border:none; border-top:1px solid var(--line); margin:44px 0; }
+  ul,ol{ margin:12px 0 12px 6px; padding-left:22px; }
+  li{ margin:6px 0; padding-left:4px; color:#3a352b; }
+  li::marker{ color:var(--gold-l); font-weight:700; }
+  blockquote{ background:#fff; border-left:4px solid var(--gold-l); border-radius:0 10px 10px 0; padding:16px 22px; margin:22px 0; color:#4a4436; box-shadow:0 1px 2px rgba(80,60,25,.06); }
+  code{ font-family:ui-monospace,Menlo,monospace; font-size:.86em; background:#EFE7D6; color:#7a5a26; padding:1.5px 6px; border-radius:5px; }
+  img{ max-width:100%; height:auto; border-radius:12px; border:1px solid var(--line); margin:20px 0; box-shadow:0 6px 20px -12px rgba(60,45,20,.4); }
+  footer.doc{ max-width:840px; margin:0 auto; padding:36px 28px; color:var(--mut); font-size:13px; text-align:center; }
+</style>
+</head>
+<body>
+<header class="top"><div class="inner">
+  <a class="home" href="index.html">&larr; Voltar ao início do pacote</a>
+  <div class="kick">Design system · telas · interações</div>
+  <h1>Documentação UX/UI</h1>
+</div></header>
+<main class="wrap">
+<blockquote>Protótipo de alta fidelidade de um CRM/prontuário para nutricionistas, com foco em três pilares: <strong>registro alimentar via WhatsApp</strong>, <strong>IA como rascunho (nunca decisão)</strong> e <strong>gestão do consultório</strong> (agenda + financeiro). Interface em português, voltada à persona "Marina Germano · CRN-3".</blockquote>
+<hr>
+<h2>1. Visão geral do produto</h2>
+<p><strong>O que é:</strong> um "prontuário vivo" para nutricionistas autônomas/consultórios. A proposta central é que <strong>tudo que a paciente envia pelo WhatsApp</strong> (foto de refeição, áudio, check-in, mensagem) <strong>vira automaticamente um evento no prontuário</strong>, estruturado pela IA como rascunho — e a nutricionista revisa, ajusta e confirma. Só a versão confirmada conta para a evolução.</p>
+<p><strong>Persona principal (usuária):</strong> nutricionista (Marina Germano, CRN-3), exibida no rodapé da barra lateral.</p>
+<p><strong>Persona secundária:</strong> a paciente, que interage exclusivamente pelo WhatsApp + portal seguro (não usa o CRM diretamente).</p>
+<p><strong>Posicionamento implícito:</strong> alternativa/migração a partir do <strong>Dietbox</strong> (há importação dedicada), com diferenciais de IA, integração nativa com WhatsApp e Google Agenda, e conformidade com a LGPD.</p>
+<p><strong>Três princípios de produto que aparecem na interface inteira:</strong></p>
+<ol>
+<li><strong>IA assistiva, não autônoma</strong> — toda estimativa nasce como rascunho "a revisar"; o texto "Confirme antes de decidir" se repete nos blocos de IA.</li>
+<li><strong>Privacidade por design (LGPD)</strong> — conteúdo clínico sensível (exames, prescrições, diagnósticos) nunca trafega pelo WhatsApp; vai por link autenticado no portal. O WhatsApp recebe só a notificação.</li>
+<li><strong>Transparência com a paciente</strong> — reajustes financeiros comunicados com 30 dias de antecedência; registros sempre rastreáveis até a fonte.</li>
+</ol>
+<hr>
+<h2>2. Identidade visual (design system)</h2>
+<p><strong>Paleta</strong> — terrosa/orgânica, remetendo a saúde e natureza:</p>
+<ul>
+<li>Fundo da aplicação: <code>#EDE5D4</code> (areia)</li>
+<li>Superfícies/cards: <code>#FBF7EF</code> (creme) e <code>#FFFFFF</code></li>
+<li>Verde-floresta (cor primária / ação): <code>#2C4A3B</code> (com gradiente <code>#26412f → #1d3327</code> na sidebar)</li>
+<li>Dourado/âmbar (acento, IA, destaque): <code>#A9824C</code>, <code>#CBA96B</code>, <code>#E7D3A6</code>, <code>#8A6A2E</code></li>
+<li>Texto: <code>#2E2A22</code> (corpo), <code>#8A7E68</code> / <code>#A99E86</code> (secundário)</li>
+<li>Semânticas: verde sucesso <code>#2C8A5B</code>, alerta/erro terracota <code>#B25B3A</code> / <code>#a04a2c</code></li>
+</ul>
+<p><strong>Tipografia:</strong></p>
+<ul>
+<li><strong>Spectral</strong> (serifada) — títulos, números grandes, nomes (classe <code>.serif</code>)</li>
+<li><strong>Plus Jakarta Sans</strong> (sans) — corpo, rótulos, botões, UI</li>
+<li><strong>Material Symbols Rounded</strong> — ícones (classe <code>.ms</code>), com variação de <code>FILL</code> para indicar estado ativo</li>
+</ul>
+<p><strong>Componentização visual recorrente:</strong></p>
+<ul>
+<li>Cards com <code>border-radius</code> 14–20px, borda <code>#E6DCC6</code> e sombra suave em duas camadas</li>
+<li>Chips/pills arredondados (<code>999px</code>) para status, filtros e tags</li>
+<li>Barras de progresso para adesão e metas</li>
+<li>Tabelas em grid com cabeçalho creme (<code>#F6EFDF</code>) em maiúsculas espaçadas</li>
+<li>Gráficos em SVG inline (barras e linhas com área preenchida)</li>
+<li><strong>Sem emoji</strong> na UI; expressividade vem de ícones e da paleta</li>
+</ul>
+<p><strong>Animações (keyframes):</strong> <code>prFade</code> (entrada de telas), <code>prToast</code> (toast), <code>prPulse</code> (indicadores "ao vivo", ex.: sincronização, processando).</p>
+<hr>
+<h2>3. Arquitetura de navegação</h2>
+<p><strong>Barra lateral fixa (250px)</strong>, sempre visível, com a marca no topo ("Smart Diet · prontuário vivo") e 5 itens de navegação primária sob o rótulo "CLÍNICA":</p>
+<ol>
+<li><strong>Início</strong> (<code>space_dashboard</code>) — dashboard</li>
+<li><strong>Pacientes</strong> (<code>groups</code>) — lista</li>
+<li><strong>Alimentos &amp; receitas</strong> (<code>menu_book</code>) — biblioteca</li>
+<li><strong>Agenda</strong> (<code>calendar_month</code>)</li>
+<li><strong>Financeiro</strong> (<code>payments</code>)</li>
+</ol>
+<p>O rodapé da sidebar mostra o perfil da nutricionista (avatar "MG", nome, "CRN-3 · nutricionista", ícone de configurações). O item ativo recebe fundo dourado translúcido, borda e ícone preenchido. A tela <strong>Paciente</strong> é filha de Pacientes (mantém "Pacientes" destacado).</p>
+<p><strong>Topo (header fixo, com blur):</strong></p>
+<ul>
+<li>Busca global ("Buscar paciente, alimento, receita…")</li>
+<li>Pill de IA: <strong>"IA · 4 a revisar"</strong> (fila de revisão)</li>
+<li>Sino de notificações com indicador (ponto vermelho)</li>
+</ul>
+<hr>
+<h2>4. Telas e módulos</h2>
+<h3>4.1 Início (Dashboard)</h3>
+<p>Saudação contextual ("Bom dia, Marina Germano · Domingo, 15 de junho · 1 consulta hoje · a IA preparou 4 registros para revisão").</p>
+<p><strong>Linha 1 — KPIs operacionais (4 cards):</strong></p>
+<ul>
+<li>Pacientes ativos (6, +2 no mês)</li>
+<li><strong>A revisar (IA)</strong> — card verde de destaque (4, "vindos do WhatsApp")</li>
+<li>Check-ins hoje (11 de 14 enviados)</li>
+<li>Alertas de adesão (2 pacientes desengajando)</li>
+</ul>
+<p><strong>Linha 2 — KPIs de negócio (4 cards):</strong> Faturamento do mês (R$ 10.500, +12%), Receita recorrente (R$ 8.400), Taxa de retenção (92%), Adesão média (78%, −4pp) — cada um com delta colorido e ícone de tendência.</p>
+<p><strong>Linha 3 (2 colunas):</strong></p>
+<ul>
+<li><strong>Pacientes recentes</strong> — lista clicável (avatar, nome, última atividade, % de adesão colorida); "ver todos →" leva à lista.</li>
+<li><strong>Fila de revisão da IA</strong> — card verde-escuro; subtítulo: "Toda estimativa nasce como rascunho. Você confirma — a IA nunca decide sozinha." Cada item (paciente, o que é, quando, kcal estimada) abre o perfil correspondente.</li>
+</ul>
+<p><strong>Linha 4 (2 colunas):</strong></p>
+<ul>
+<li><strong>Receita (6 meses)</strong> — gráfico de barras SVG (último mês em destaque), "+18% YTD".</li>
+<li><strong>Insights da semana</strong> — IA cruza adesão/registros/agenda; cada insight é clicável e leva à tela relevante (ex.: "2 em risco de evasão" → perfil; "5 retornos a agendar" → Agenda).</li>
+</ul>
+<hr>
+<h3>4.2 Pacientes (lista)</h3>
+<p>Cabeçalho com contagem de ativos + botão <strong>"Novo paciente"</strong>.</p>
+<ul>
+<li><strong>Chips de filtro por status:</strong> Todos / Ativo / Pré-cadastro / Inativo (filtro reativo).</li>
+<li><strong>Busca</strong> integra com a busca global do topo (filtra por nome).</li>
+<li><strong>Tabela</strong> (grid de 5 colunas): Paciente (avatar + idade + objetivo) · Status (pill colorida) · <strong>Adesão 7d</strong> (barra + %, cor por faixa: ≥80 verde, ≥60 âmbar, &lt;60 terracota) · Última atividade (com badge de alerta quando há, ex.: "2 jantares pulados", "consentimento pendente") · Próxima consulta.</li>
+<li>Clicar em qualquer linha abre o <strong>perfil do paciente</strong>.</li>
+</ul>
+<p>Dados de exemplo: 8 pacientes com objetivos variados (emagrecimento, hipertrofia, performance, controle glicêmico, reeducação alimentar) e estados distintos (ativo, pré-cadastro aguardando consentimento, inativo).</p>
+<hr>
+<h3>4.3 Paciente (perfil) — 5 abas</h3>
+<p><strong>Cabeçalho do paciente:</strong> avatar, nome, pill de status, idade/objetivo/próxima consulta. Ações: <strong>"Importar consulta"</strong> (abre modal) e selo <strong>"WhatsApp conectado"</strong>.</p>
+<p><strong>Abas:</strong> Perfil &amp; timeline · Anamnese · Plano alimentar · Prescrição &amp; exames · Evolução &amp; metas.</p>
+<h4>Aba 1 — Perfil &amp; timeline</h4>
+<ul>
+<li><strong>Timeline alimentada pelo WhatsApp</strong> (badge "alimentada pelo WhatsApp"). Cada evento na linha do tempo tem um marcador colorido, horário e via. Tipos de evento:</li>
+<ul>
+<li><strong>Refeição/áudio (IA)</strong> — card com selo "IA", itens reconhecidos, kcal/macros estimados, comparativo <strong>"Registrado vs. prescrito"</strong> (desvio em kcal e % vs. a refeição do plano, com cor por faixa de desvio), e botão <strong>"revisar"</strong> (status "a revisar") ou selo <strong>"confirmado"</strong>.</li>
+<li><strong>Check-in</strong> — hidratação/sono/humor.</li>
+<li><strong>Mensagem da paciente</strong> — com atalho "responder pelo CRM →".</li>
+<li><strong>Resposta</strong> — mensagens enviadas pela nutricionista.</li>
+</ul>
+<li><strong>Campo de resposta</strong> ao final ("Responder pela conversa do WhatsApp…" + Enviar) que adiciona uma resposta no topo da timeline.</li>
+<li><strong>Coluna direita:</strong> card de <strong>Evolução</strong> (peso, % gordura, adesão 7d, nº de registros); <strong>Questionário pré-consulta</strong> (enviar formulário pelo WhatsApp → respostas voltam para a anamnese); <strong>Resumo IA pré-consulta</strong> (síntese + "Confirme antes de decidir").</li>
+</ul>
+<h4>Aba 2 — Anamnese</h4>
+<ul>
+<li>Banner "Anamnese completa" (modelo Smart Diet, parcialmente respondida pelo questionário pré-consulta) + botão Editar.</li>
+<li><strong>Antropometria &amp; medidas</strong> — grid de 12 medidas (peso, altura, IMC, % gordura, massa magra, circunferências, dobras) com variação colorida vs. avaliação anterior.</li>
+<li><strong>Seções clínicas</strong> (6 cards): Queixa &amp; objetivo · Histórico clínico · Hábitos alimentares · Estilo de vida · Comportamento alimentar · Funcionamento intestinal — cada uma como pares chave/valor.</li>
+</ul>
+<h4>Aba 3 — Plano alimentar</h4>
+<ul>
+<li>Cabeçalho com versão ativa (ex.: "v3 · ativo"), vigência ("Todos os dias") e ações <strong>"Montar plano"</strong> (builder), <strong>"Exportar PDF"</strong>.</li>
+<li><strong>Cards modulares de refeição</strong> (água, pós-treino, almoço, lanches, jantar...), cada um com:</li>
+<ul>
+<li>Horário, nome, nota, alvo calórico (pill), alça de arrastar (<code>drag_indicator</code>).</li>
+<li><strong>Itens</strong> com quantidade e <strong>alternativas "OU"</strong> (ex.: morango 100 g OU mamão 70 g OU melão...).</li>
+<li><strong>Substituições</strong> completas (ex.: "Substituição 1 — Crepe com creme de ricota") com seus próprios itens.</li>
+<li>Botões para adicionar Item, Alternativa (OU) e Substituição.</li>
+</ul>
+<li>Clicar no cabeçalho de uma refeição a "seleciona" (borda dourada + fundo destacado).</li>
+<li><strong>Coluna direita (sticky):</strong> Resumo do plano (nº de refeições, substituições, meta calórica do dia), Observações gerais, e atalho "Montar com a biblioteca" (base TACO/TBCA + receitas).</li>
+</ul>
+<p>Dados de exemplo: plano realista de 6 refeições com substituições detalhadas, no padrão de planilha de nutricionista.</p>
+<h4>Aba 4 — Prescrição &amp; exames</h4>
+<ul>
+<li><strong>Suplementação prescrita</strong> — lista (nome, dose, posologia, tag) + adicionar do catálogo (chips: creatina, B12, colágeno, whey, probiótico).</li>
+<li><strong>Assinatura eletrônica CRN-3</strong> — "Gerar &amp; assinar" (documento datado, válido por 20 anos).</li>
+<li><strong>Exames</strong> — comparativo entre coletas (10/03 vs. 10/06), com Δ, ícone de tendência (cor por melhora/piora), faixa de referência e flag "alto" quando fora da faixa. Botões "Solicitar" e <strong>"Cadastrar resultado"</strong> (modal). Resumo de IA destacando o que saiu da faixa ("LDL ainda acima... Confirme antes de decidir").</li>
+<li><strong>Aviso LGPD</strong> — "Conteúdo clínico não trafega pelo WhatsApp" (segue por link autenticado no portal).</li>
+</ul>
+<h4>Aba 5 — Evolução &amp; metas</h4>
+<ul>
+<li><strong>Gráficos de linha SVG</strong> com área: Peso (−2,1 kg em 6 sem.) e % de gordura (−1,3 pp), eixo de semanas S1–S6.</li>
+<li><strong>Metas prescritas</strong> — barras de progresso (peso, % gordura, adesão semanal, hidratação) com atual → meta.</li>
+<li><strong>Antropometria</strong> — circunferências com variação.</li>
+<li><strong>Fotos de avaliação</strong> — comparativo lado a lado (de/para datas, recebidas via WhatsApp), por ângulo (frente/perfil/costas/abdômen), com placeholders; botão "Solicitar novas fotos pelo WhatsApp".</li>
+</ul>
+<hr>
+<h3>4.4 Alimentos &amp; receitas (biblioteca)</h3>
+<p>Alternador segmentado <strong>Alimentos / Receitas</strong>.</p>
+<p><strong>Alimentos:</strong></p>
+<ul>
+<li>Busca + chips de base (Todas / TACO / TBCA / Próprio) + botões <strong>Importar</strong> e <strong>Novo alimento</strong>.</li>
+<li>Tabela: alimento (porção + categoria) · base (pill colorida) · kcal · proteína · carboidrato · gordura. Base TBCA/TACO + itens próprios/de fabricante.</li>
+</ul>
+<p><strong>Receitas:</strong></p>
+<ul>
+<li>Botões Importar / Nova receita.</li>
+<li>Grade de cards (3 col.): tag de refeição, placeholder de foto, nome, ingredientes, kcal + macros, nº de porções e <strong>"usar no plano"</strong> (toast de confirmação).</li>
+</ul>
+<hr>
+<h3>4.5 Agenda</h3>
+<p>Cabeçalho ("Semana de 16–20 de junho · lembretes automáticos por WhatsApp") + "Novo agendamento".</p>
+<ul>
+<li><strong>Banner de integração Google Agenda</strong> — conectado/desconectado (toggle), com selo "sincronizado" pulsante quando ativo (sincronização bidirecional).</li>
+<li><strong>Visão semanal</strong> (Seg–Sex): cada dia é uma coluna; agendamentos mostram horário, fonte (<strong>Google</strong> ou <strong>Smart Diet</strong>), paciente, tipo e status do lembrete (enviado/agendado), com borda colorida por tipo de consulta.</li>
+<li><strong>Coluna direita:</strong> "Hoje" (card verde com consultas do dia), "Horários livres hoje" (chips) e "Tipos de consulta" (1ª consulta 60min, Retorno 40min, Avaliação física 30min) com legenda de cores.</li>
+</ul>
+<hr>
+<h3>4.6 Financeiro</h3>
+<p>Cabeçalho + <strong>"Emitir recibo"</strong>.</p>
+<ul>
+<li><strong>KPIs (4):</strong> Recebido em junho (R$ 8.400), A receber (R$ 2.100), Inadimplência (R$ 350), Ticket médio (R$ 268).</li>
+<li><strong>Faturamento mensal</strong> — gráfico de barras empilhadas (recorrência + avulso) com eixo Y, grade, rótulos e total por mês; legenda de cores.</li>
+<li><strong>Composição da receita</strong> — barras (planos recorrentes 64%, avulsas 20%, pacotes 16%) + indicadores (ticket médio, LTV, inadimplência, churn).</li>
+<li><strong>Cobranças recorrentes</strong> — tabela (paciente, plano, valor, vencimento, status "em dia"/"atrasado").</li>
+<li><strong>Recibos emitidos</strong> — lista com download em PDF.</li>
+<li><strong>Reajuste transparente</strong> — comunicação com 30 dias de antecedência; próximo reajuste sugerido (jan/2027, +6,2% IPCA).</li>
+<li><strong>Pagamentos (fase 2)</strong> — Pix e cartão recorrente (roadmap).</li>
+</ul>
+<hr>
+<h2>5. Modais e fluxos</h2>
+<ol>
+<li><strong>Revisar estimativa da IA</strong> (a partir da timeline) — edita kcal/proteína/carbo/gordura; mostra tabela "Desvio vs. plano" (registrado vs. prescrito com Δ). "Confirmar e somar" marca o evento como confirmado e o soma à evolução; "Cancelar" descarta. Mensagem-chave: <em>"A sua versão é a oficial e só ela conta para a evolução."</em></li>
+</ol>
+<ol>
+<li><strong>Novo plano alimentar</strong> — escolher como começar (Em branco / Subir PDF / Copiar anterior / <strong>Importar do Dietbox</strong>); meta calórica; distribuição sugerida (30P/40C/30G). PDF e Dietbox revelam áreas dedicadas (upload com extração por IA / conectar conta Dietbox). "Criar e abrir editor" gera rascunho (v4).</li>
+</ol>
+<ol>
+<li><strong>Montar plano (builder)</strong> — modal grande de 2 colunas: <strong>paleta de blocos prontos</strong> (café, lanches, almoço, jantar, ceia) à esquerda; <strong>plano montado</strong> à direita com refeições editáveis (ajustar quantidade, remover item/refeição, adicionar da biblioteca). Rodapé com <strong>total do plano vs. meta</strong>, Exportar PDF e Salvar. Estado vazio orientado.</li>
+</ol>
+<ol>
+<li><strong>Importar consulta</strong> — fontes: Colar texto / Arquivo .txt / .docx. <strong>"Processar com IA"</strong> simula processamento (estado: aguardando → processando… → estruturado) e produz um <strong>resumo estruturado</strong> (queixa/evolução, conduta, antropometria, retorno) como rascunho. Aviso de processamento no portal seguro, nunca pelo WhatsApp. Salvar grava no prontuário.</li>
+</ol>
+<ol>
+<li><strong>Cadastrar resultado de exame</strong> — upload do PDF do laboratório (IA extrai marcadores) ou campos manuais (data, lab, marcador, resultado, referência). Entra no comparativo automaticamente.</li>
+</ol>
+<ol>
+<li><strong>Novo alimento / Nova receita</strong> — nome, base, porção, kcal e macros (P/C/G). Salva na biblioteca própria.</li>
+</ol>
+<ol>
+<li><strong>Importar alimentos &amp; receitas</strong> — opções: planilha (.csv/.xlsx), Dietbox, base TACO/TBCA oficial.</li>
+</ol>
+<ol>
+<li><strong>Toast</strong> — confirmação flutuante (verde) para praticamente toda ação (enviar mensagem, confirmar revisão, salvar, exportar, conectar Google, etc.), com auto-dismiss (~2,8 s).</li>
+</ol>
+<hr>
+<h2>6. Interações e micro-interações</h2>
+<ul>
+<li><strong>Navegação reativa</strong> entre 6 telas + 5 abas do paciente + 2 abas da biblioteca, tudo via estado interno (sem recarregar).</li>
+<li><strong>Filtros reativos:</strong> status de pacientes, base de alimentos; <strong>busca</strong> por nome de paciente e de alimento.</li>
+<li><strong>Estados de cor por dado:</strong> adesão, desvio calórico, tendência de exames, status de pagamento — todos calculados por faixas.</li>
+<li><strong>Edição inline</strong> no builder (campo de quantidade recalcula o total).</li>
+<li><strong>Toggle</strong> do Google Agenda com feedback de estado (selo pulsante + toast).</li>
+<li><strong>Simulação de processamento de IA</strong> com transição de estados temporizada.</li>
+<li><strong>Entradas</strong> controladas (modais de revisão, exame, alimento) com <code>onChange</code> ligado ao estado.</li>
+<li><strong>Animações de entrada</strong> em cada troca de tela/aba (<code>prFade</code>).</li>
+</ul>
+<hr>
+<h2>7. Parametrização (tweaks)</h2>
+<p>O protótipo expõe duas propriedades editáveis:</p>
+<ul>
+<li><strong>productName</strong> — nome do produto (padrão "Smart Diet").</li>
+<li><strong>nutricionista</strong> — nome da profissional (padrão "Marina Germano").</li>
+</ul>
+<p>Ambos refletem na sidebar, saudação do dashboard e cabeçalhos.</p>
+<hr>
+<h2>8. Observações e limitações do protótipo</h2>
+<ul>
+<li>É um <strong>protótipo de interface</strong>: dados são fixos (mock) e ações de back-end (salvar, exportar PDF, enviar WhatsApp, sincronizar Google, processar IA) são <strong>simuladas</strong> com toasts e estados — não há persistência real nem integrações ativas.</li>
+<li>A <strong>busca</strong>, os <strong>filtros</strong>, a <strong>revisão da IA</strong>, o <strong>builder de plano</strong> e o <strong>toggle do Google</strong> têm lógica funcional real dentro da sessão.</li>
+<li>Layout otimizado para <strong>desktop</strong> (largura fluida; a Agenda pede ~1366px para caber a semana sem rolagem horizontal). Não há layout mobile dedicado — coerente com a premissa de que a paciente usa o WhatsApp, não o CRM.</li>
+<li>Integrações citadas como <strong>roadmap</strong>: pagamentos Pix/cartão (fase 2).</li>
+</ul>
+<hr>
+<p><em>Documento gerado a partir do protótipo <code>Prontu - CRM de Nutrição.dc.html</code>.</em></p>
+</main>
+<footer class="doc">Smart Diet · CRM de Nutrição — pacote de handoff · atualizado em jul/2026</footer>
+</body>
+</html>
