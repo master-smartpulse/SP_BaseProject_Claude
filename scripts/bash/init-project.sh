@@ -81,12 +81,10 @@ fi
 run touch specs/.gitkeep
 
 echo "== Removing template-repo-only files =="
-for f in MELHORIAS_BASE_PROJECT.md; do
-    if [ -f "$f" ]; then
-        run rm -f "$f"
-        echo "  removed: $f"
-    fi
-done
+if [ -f MELHORIAS_BASE_PROJECT.md ]; then
+    run rm -f MELHORIAS_BASE_PROJECT.md
+    echo "  removed: MELHORIAS_BASE_PROJECT.md"
+fi
 
 echo ""
 echo "== Day-1 checklist (do these next, inside a Claude Code session) =="

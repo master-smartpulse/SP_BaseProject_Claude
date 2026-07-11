@@ -5,7 +5,8 @@ get_repo_root() {
     if git rev-parse --show-toplevel >/dev/null 2>&1; then
         git rev-parse --show-toplevel
     else
-        local script_dir="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        local script_dir
+        script_dir="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
         (cd "$script_dir/../.." && pwd)
     fi
 }
@@ -21,7 +22,8 @@ get_current_branch() {
         return
     fi
 
-    local repo_root=$(get_repo_root)
+    local repo_root
+    repo_root=$(get_repo_root)
     local specs_dir="$repo_root/specs"
 
     if [[ -d "$specs_dir" ]]; then
@@ -30,7 +32,8 @@ get_current_branch() {
 
         for dir in "$specs_dir"/*; do
             if [[ -d "$dir" ]]; then
-                local dirname=$(basename "$dir")
+                local dirname
+                dirname=$(basename "$dir")
                 if [[ "$dirname" =~ ^([0-9]{3})- ]]; then
                     local number=${BASH_REMATCH[1]}
                     number=$((10#$number))
@@ -106,15 +109,18 @@ find_feature_dir_by_prefix() {
 }
 
 get_feature_paths() {
-    local repo_root=$(get_repo_root)
-    local current_branch=$(get_current_branch)
+    local repo_root
+    repo_root=$(get_repo_root)
+    local current_branch
+    current_branch=$(get_current_branch)
     local has_git_repo="false"
 
     if has_git; then
         has_git_repo="true"
     fi
 
-    local feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$current_branch")
+    local feature_dir
+    feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$current_branch")
 
     # Features created via /specify-tech have spec-tech.md instead of spec.md;
     # FEATURE_SPEC points to whichever exists.
@@ -164,6 +170,7 @@ json_array() {
 
 # Parses the flags shared by the creation scripts into globals:
 # JSON_MODE, SHORT_NAME, BRANCH_NUMBER, UPDATE_MODE and ARGS (remaining words).
+# shellcheck disable=SC2034  # globals are consumed by the sourcing scripts
 parse_create_args() {
     JSON_MODE=false
     SHORT_NAME=""
@@ -346,8 +353,10 @@ get_highest_from_specs() {
     if [ -d "$specs_dir" ]; then
         for dir in "$specs_dir"/*; do
             [ -d "$dir" ] || continue
-            local dirname=$(basename "$dir")
-            local number=$(echo "$dirname" | grep -o '^[0-9]\+' || echo "0")
+            local dirname
+            dirname=$(basename "$dir")
+            local number
+            number=$(echo "$dirname" | grep -o '^[0-9]\+' || echo "0")
             number=$((10#${number:-0}))
             [ "$number" -gt "$highest" ] && highest=$number
         done
@@ -357,12 +366,15 @@ get_highest_from_specs() {
 
 get_highest_from_branches() {
     local highest=0
-    local branches=$(git branch -a 2>/dev/null || echo "")
+    local branches
+    branches=$(git branch -a 2>/dev/null || echo "")
     if [ -n "$branches" ]; then
         while IFS= read -r branch; do
-            local clean_branch=$(echo "$branch" | sed 's/^[* ]*//; s|^remotes/[^/]*/||')
+            local clean_branch
+            clean_branch=$(echo "$branch" | sed 's/^[* ]*//; s|^remotes/[^/]*/||')
             if echo "$clean_branch" | grep -q '^[0-9]\{3\}-'; then
-                local number=$(echo "$clean_branch" | grep -o '^[0-9]\{3\}' || echo "0")
+                local number
+                number=$(echo "$clean_branch" | grep -o '^[0-9]\{3\}' || echo "0")
                 number=$((10#${number:-0}))
                 [ "$number" -gt "$highest" ] && highest=$number
             fi
@@ -374,14 +386,16 @@ get_highest_from_branches() {
 next_feature_number() {
     local specs_dir="$1"
     local has_git_repo="$2"
-    local highest=$(get_highest_from_specs "$specs_dir")
+    local highest
+    highest=$(get_highest_from_specs "$specs_dir")
     if [ "$has_git_repo" = true ]; then
         # Network refresh is opt-in (SPECIFY_FETCH=1) so numbering never blocks on connectivity;
         # without it, numbering uses specs/ plus local and previously fetched branches.
         if [ "${SPECIFY_FETCH:-0}" = "1" ]; then
             git fetch --all --prune 2>/dev/null || true
         fi
-        local highest_branch=$(get_highest_from_branches)
+        local highest_branch
+        highest_branch=$(get_highest_from_branches)
         [ "$highest_branch" -gt "$highest" ] && highest=$highest_branch
     fi
     echo $((highest + 1))
@@ -393,8 +407,10 @@ build_branch_name() {
     local name="${feature_num}-${suffix}"
     local max_length=244
     if [ ${#name} -gt $max_length ]; then
-        local max_suffix=$((max_length - 4))
-        local truncated=$(printf '%s' "$suffix" | cut -c1-$max_suffix | sed 's/-$//')
+        local max_suffix
+        max_suffix=$((max_length - 4))
+        local truncated
+        truncated=$(printf '%s' "$suffix" | cut -c1-$max_suffix | sed 's/-$//')
         name="${feature_num}-${truncated}"
         >&2 echo "[specify] Warning: Branch name truncated to $max_length bytes"
     fi

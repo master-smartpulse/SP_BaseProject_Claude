@@ -3,6 +3,11 @@
 Registro de mudanças do template-base (versionamento semântico; tag `v{VERSION}` a cada release).
 Projetos derivados: use `scripts/bash/update-from-base.sh` para sincronizar os arquivos do kit e leia as entradas abaixo para follow-ups manuais (emendas de constitution, novos comandos).
 
+## 1.0.3 — 2026-07-11
+
+- ShellCheck limpo (gate do CI que passou a ser obrigatório na 1.0.2): SC2155 (declare/assign separados em 17 pontos — exit codes não são mais mascarados sob `set -e`), SC2043 e SC2034 resolvidos
+- Merge do conteúdo remoto de docs/layout (protótipos adicionados por outro colaborador)
+
 ## 1.0.2 — 2026-07-11
 
 Correções da re-auditoria das dimensões pendentes (28 achados verificados, vários reproduzidos em sandbox).

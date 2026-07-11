@@ -23,7 +23,8 @@ fi
 generate_branch_name() {
     local description="$1"
     local stop_words="^(i|a|an|the|to|for|of|in|on|at|by|with|from|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|should|could|can|may|might|must|shall|this|that|these|those|my|your|our|their|want|need|add|get|set|o|os|as|e|ou|de|em|um|uma|uns|umas|da|do|das|dos|na|no|nas|nos|ao|aos|para|por|com|sem|que|como|ser|ter|seu|sua|seus|suas|meu|minha|nosso|nossa|quero|preciso|criar|adicionar|fazer|novo|nova)$"
-    local clean_name=$(transliterate "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g')
+    local clean_name
+    clean_name=$(transliterate "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g')
     local meaningful_words=()
 
     for word in $clean_name; do
@@ -54,7 +55,8 @@ generate_branch_name() {
         done
         echo "$result"
     else
-        local cleaned=$(clean_branch_name "$description")
+        local cleaned
+        cleaned=$(clean_branch_name "$description")
         echo "$cleaned" | tr '-' '\n' | grep -v '^$' | head -3 | tr '\n' '-' | sed 's/-$//' || true
     fi
 }
