@@ -1,8 +1,8 @@
 # Constituição do Projeto
 
-**Versão:** 1.2.0  
+**Versão:** 1.5.0  
 **Ratificada em:** a definir — preencher ao adotar o template em um projeto (o histórico de versões abaixo refere-se ao template-base)  
-**Última emenda:** 2026-06-09 — v1.1.0: Oficialização da Stack Padrão TypeScript (Regra Geral 6); v1.2.0: Regra Geral 3 condicional (design-boilerplate quando existir), Checklist de Conformidade condicional por aplicação, Tipo de Projeto web+mobile
+**Última emenda:** 2026-07-11 — v1.1.0: Stack Padrão TypeScript (Regra Geral 6); v1.2.0: Regra Geral 3 condicional, Checklist condicional por aplicação, Tipo web+mobile; v1.3.0: `no-explicit-any` como error (Princípio 2); v1.4.0: review.md sancionado (Regra Geral 2), gatilho de atualização de estado restrito e DoD operacional (Princípio 8); v1.5.0: regra de dispensa do UseCase para CRUD trivial e papel de entidade dos modelos Prisma (Princípio 1), testes obrigatórios no CI (Princípio 7), TDD por história (Princípio 5)
 
 ---
 
@@ -44,9 +44,12 @@ Todo o trabalho de desenvolvimento DEVE estar alinhado a estes princípios, salv
 - **Services:** orquestração da lógica de negócio
 - **Use Cases:** operações de negócio específicas e isoladas
 - **Repositories:** abstração de acesso a dados
-- **Models:** entidades de domínio
 
-**Justificativa:** Permite testabilidade, manutenção e baixo acoplamento. Cada camada tem uma única responsabilidade e as dependências fluem para dentro.
+**Entidades:** os modelos do Prisma (schema) e os tipos em `types/` cumprem o papel de entidade de domínio — não há camada `models/` separada na estrutura de módulos.
+
+**Dispensa do UseCase (CRUD trivial):** operações CRUD triviais — sem regra de negócio composta, sem orquestração de múltiplos repositórios/adapters e sem reuso entre entrypoints — PODEM fluir Controller → Service → Repository, sem UseCase. O UseCase é obrigatório quando qualquer uma dessas condições existir. A dispensa não elimina o Service nem o Repository, e deve ser aplicada de forma consistente dentro do módulo.
+
+**Justificativa:** Permite testabilidade, manutenção e baixo acoplamento sem impor boilerplate onde não há domínio. Cada camada tem uma única responsabilidade e as dependências fluem para dentro.
 
 **DEVE:** Cada subpasta de módulo (controllers/, services/, repositories/, use-cases/, dto/) DEVE ter arquivo `index.ts` (barrel exports). Cada use case em `use-cases/{action-name}/` DEVE ter seu próprio `index.ts`.
 
@@ -67,7 +70,7 @@ Todo o trabalho de desenvolvimento DEVE estar alinhado a estes princípios, salv
 **Validação:**
 
 - `tsconfig.json` DEVE ter `strict: true` (ou flags strict equivalentes)
-- Regra ESLint `@typescript-eslint/no-explicit-any` DEVE estar habilitada (mínimo warning)
+- Regra ESLint `@typescript-eslint/no-explicit-any` DEVE estar habilitada como **error**; exceções apenas via `// eslint-disable-next-line @typescript-eslint/no-explicit-any` acompanhado de comentário com a justificativa
 - Todos os contratos de API DEVE ter tipos TypeScript correspondentes
 
 ---
@@ -112,7 +115,7 @@ _Aplica-se a aplicações backend; features sem backend não geram estas obriga�
 
 **Justificativa:** Garante que os requisitos estão compreendidos, evita over-engineering e mantém alta qualidade de código.
 
-**Validação:** No tasks.md, toda task de implementação DEVE ser precedida pela(s) task(s) de teste correspondente(s) — a fase de testes vem antes da fase de núcleo, independentemente da numeração. Todos os testes DEVE ser executáveis e documentados.
+**Validação:** No tasks.md, toda task de implementação DEVE ser precedida pela(s) task(s) de teste correspondente(s) — dentro de cada bloco de user story, as tasks de teste vêm antes das de implementação, independentemente da numeração. Todos os testes DEVE ser executáveis e documentados.
 
 ---
 
@@ -144,7 +147,7 @@ _Aplica-se a aplicações backend; features sem backend não geram estas obriga�
 
 **Justificativa:** Mantém estilo de código consistente, permite automação e melhora a eficiência de code review.
 
-**Validação:** O pipeline de CI/CD DEVE executar lint, type-check e validação de build. Todos os commits DEVE seguir o formato.
+**Validação:** O pipeline de CI/CD DEVE executar lint, type-check, **testes** e validação de build (workflow base em `.github/workflows/ci.yml`). Todos os commits DEVE seguir o formato.
 
 ---
 
@@ -162,7 +165,7 @@ _Aplica-se a aplicações backend; features sem backend não geram estas obriga�
 
 **Justificativa:** Facilita onboarding, reduz silos de conhecimento, torna decisões rastreáveis e mantém o estado do produto e da implementação visível para lançamento e operação.
 
-**Validação:** Documentação Swagger DEVE estar atualizada. Todas as specs DEVE seguir os templates em `templates/`. FEATURE_LIST e IMPLEMENTATION_STATUS DEVE ser atualizados quando features ou progresso de implementação mudarem. Todos os comandos do workflow (`/specify`, `/specify-tech`, `/plan`, `/tasks`, `/implement`, `/review`, `/constitution`) DEVE atualizar ambos os documentos ao concluir.
+**Validação:** Documentação Swagger DEVE estar atualizada. Todas as specs DEVE seguir os templates em `templates/`. FEATURE_LIST e IMPLEMENTATION_STATUS DEVE ser atualizados quando features ou progresso de implementação mudarem — os comandos que mudam estado de feature (`/specify`, `/specify-tech`, `/implement`, `/review` e `/specify-design` quando cria/altera funcionalidade visível) DEVEM atualizá-los ao concluir; `/plan`, `/tasks`, `/clarify`, `/analyze` e `/constitution` não geram essa obrigação (o estágio é derivável dos artefatos em `specs/`). A completude e a Definição de Pronto seguem a fórmula operacional definida em `IMPLEMENTATION_STATUS.md` (% = tasks [X]/total; PRONTA = 100% + review APROVADO com verificação executável).
 
 ---
 
@@ -172,7 +175,7 @@ Estas regras aplicam-se a todo o desenvolvimento, incluindo trabalho assistido p
 
 1. **Sem comentários no código a não ser que sejam essenciais.** Código autoexplicativo é preferível. Comentários são permitidos apenas quando explicam o "porquê" não óbvio (ex.: workaround de biblioteca, decisão de negócio crítica, restrição de performance). Evite comentários que descrevem o "o quê" — o código deve falar por si.
 
-2. **Sem criar arquivos MD se o usuário não pedir.** Não criar README.md, CHANGELOG.md, CONTRIBUTING.md, documentação adicional ou qualquer arquivo Markdown além dos artefatos obrigatórios do fluxo (spec.md, plan.md, tasks.md em `specs/[feature]/`). Exceção: os documentos de governança (constitution, arquitetura, FEATURE_LIST, IMPLEMENTATION_STATUS) são mantidos conforme Princípio 8.
+2. **Sem criar arquivos MD se o usuário não pedir.** Não criar README.md, CHANGELOG.md, CONTRIBUTING.md, documentação adicional ou qualquer arquivo Markdown além dos artefatos sancionados do fluxo em `specs/[feature]/`: spec.md (ou spec-tech.md), plan.md, research.md, data-model.md, quickstart.md, contracts/, tasks.md e review.md. Exceção: os documentos de governança (constitution, arquitetura, FEATURE_LIST, IMPLEMENTATION_STATUS) são mantidos conforme Princípio 8.
 
 3. **Design System (Frontend):** Todo desenvolvimento de interface do usuário (páginas, componentes, formulários) DEVE seguir o design e os padrões definidos na pasta `design-boilerplate/`, **quando ela existir no projeto**. O boilerplate utiliza React, TypeScript, shadcn/ui e Tailwind CSS (tooling de build conforme a stack web escolhida — Vite ou Next.js, ver Regra Geral 6). Componentes de UI, tokens de cor (CSS variables), tipografia e layout DEVE ser consistentes com o design-boilerplate. Enquanto a pasta não existir, os padrões de design adotados DEVEM ser registrados no plan.md da primeira feature com UI e seguidos nas demais.
 

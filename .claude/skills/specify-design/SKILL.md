@@ -92,57 +92,20 @@ Antes de propor direção, produza:
 3. **Assinatura** — um elemento visual, estrutural ou de interação que só faria sentido para ESTE produto.
 4. **Defaults a rejeitar** — 3 escolhas óbvias para esse tipo de interface, e o que substitui cada uma.
 
-### Camadas sutis (a espinha dorsal)
+### Fundamentos de craft (resumo — detalhes e valores em `references/principles.md`, fonte única)
 
-- **Elevação de superfície:** base → cards → dropdowns → overlays. Cada salto é apenas alguns pontos percentuais de luminância. Você sente, não vê.
-- **Bordas:** rgba de baixa opacidade, não cores sólidas. Definem sem chamar atenção. Construa progressão: padrão, sutil, ênfase, foco.
-- **Sidebar:** mesmo fundo da canvas, separação por borda sutil. Cores diferentes fragmentam o espaço.
-- **Inputs:** ligeiramente mais escuros que o entorno (encaixados), não mais claros.
-- **Dropdowns:** um nível acima do pai, com borda levemente mais visível por estarem flutuando.
-
-### Tokens (arquitetura)
-
-Toda cor mapeia em primitivos:
-
-- Foreground: primary, secondary, tertiary, muted (4 níveis, não 2)
-- Background: base, elevated, overlay
-- Border: default, subtle, strong, focus
-- Brand: um único acento, usado com intenção
-- Semantic: destructive, warning, success
-- Control: backgrounds e bordas dedicados para formulários
-
-**Teste dos tokens:** lendo só os nomes das variáveis, dá pra adivinhar de que produto é? `--ink` e `--pergaminho` evocam mundo. `--gray-700` e `--surface-2` evocam template.
-
-### Espaço, raio, profundidade
-
-- **Espaço:** unidade base (4 ou 8px), todos os valores são múltiplos. Escala: micro / componente / seção / separação maior.
-- **Padding simétrico** salvo necessidade visual real.
-- **Raio:** escala consistente. Mais agudo = técnico. Mais redondo = amistoso. Não misture.
-- **Profundidade: escolha UMA estratégia e comprometa-se:**
-  - Borders-only (denso, técnico — Linear, Raycast)
-  - Sombra única sutil (produto acessível)
-  - Sombras em camadas (cards com presença física — Stripe)
-  - Shift de cor de superfície (hierarquia sem sombra)
-- Não misture estratégias.
-
-### Tipografia
-
-- Headlines: peso e tracking apertado para presença
-- Body: peso confortável para leitura
-- UI/labels: peso médio que funciona em tamanhos pequenos
-- Dados: monospace com `tabular-nums`
-
-Hierarquia por **peso + tracking + opacidade**, não só tamanho.
+- **Camadas sutis**: elevação por poucos pontos percentuais de luminância (sente, não vê); bordas rgba de baixa opacidade com progressão (padrão/sutil/ênfase/foco); sidebar com o mesmo fundo da canvas; inputs encaixados (mais escuros que o entorno); dropdowns um nível acima do pai.
+- **Tokens**: toda cor mapeia em primitivos — foreground em 4 níveis, background (base/elevated/overlay), border, brand único, semantic, control dedicado para formulários. Teste dos tokens: lendo só os nomes das variáveis, dá pra adivinhar de que produto é?
+- **Espaço e raio**: unidade base (4 ou 8px) e múltiplos em tudo; padding simétrico salvo necessidade real; escala de raio consistente (agudo = técnico, redondo = amistoso — não misture).
+- **Profundidade**: escolha UMA estratégia (borders-only, sombra única sutil, sombras em camadas ou shift de cor de superfície) e comprometa-se — não misture.
+- **Tipografia**: hierarquia por peso + tracking + opacidade, não só tamanho; dados em monospace com `tabular-nums`.
+- **Componentes nativos**: nunca `<select>` ou `<input type="date">` para UI estilizada — construa custom (trigger + popover, calendar popover).
 
 ### Estados (não opcionais)
 
 Todo interativo precisa de: default, hover, active, focus, disabled.
 Todo dado precisa de: loading, vazio, erro.
 Estados ausentes fazem a interface parecer quebrada.
-
-### Componentes nativos
-
-Nunca use `<select>` ou `<input type="date">` para UI estilizada — não renderizam consistentemente. Construa custom: trigger + popover, calendar popover, etc.
 
 ### Checks antes de mostrar (modo Interface)
 
@@ -264,10 +227,11 @@ Independentemente do modo, a resposta deve incluir:
 
 Para aprofundar princípios do modo Interface, consulte:
 
-- `references/principles.md` — Arquitetura de tokens, escalas, dark mode
+- `references/principles.md` — Fonte única dos detalhes de craft: tokens, escalas, profundidade, tipografia, dark mode
 - `references/example.md` — Subtle layering aplicado
 - `references/critique.md` — Protocolo de crítica pós-build
-- `references/validation.md` — Quando atualizar o system.md do projeto
+- `references/validation.md` — Verificações de consistência contra o system.md do projeto
+- `references/memory.md` — Quando e como atualizar o system.md do projeto
 
 ---
 
@@ -277,3 +241,19 @@ Para aprofundar princípios do modo Interface, consulte:
 - Lidere com exploração e recomendação concretas. Confirme com uma pergunta direta.
 - Documentação e specs em **português (pt-BR)**. Código segue convenções do projeto.
 - Após terminar, ofereça salvar padrões para sessões futuras.
+
+---
+
+## Checklist obrigatório (gate)
+
+Antes de dar o trabalho por concluído, verifique (fonte única deste gate — o comando /specify-design apenas referencia):
+
+- [ ] Modo identificado e declarado (Interface ou Frontend)
+- [ ] Intent / propósito explícito com pessoa, verbo e sensação (Interface) ou tom extremo e diferenciador (Frontend)
+- [ ] Paleta e tipografia justificadas a partir do mundo do produto, sem defaults genéricos
+- [ ] Estratégia de profundidade única e declarada (Interface) ou comprometimento coerente com o tom estético (Frontend)
+- [ ] Estados de interação e de dados implementados (hover/focus/loading/vazio/erro quando aplicável)
+- [ ] Auto-crítica rodada (swap/squint/signature/token no Interface; memory/font-swap/screenshot/coherence no Frontend)
+- [ ] Acessibilidade básica garantida (contraste, foco, semântica, teclado)
+- [ ] Conteúdo coerente com o domínio (sem lorem, sem strings genéricas)
+- [ ] Oferta de salvar padrões reusáveis feita

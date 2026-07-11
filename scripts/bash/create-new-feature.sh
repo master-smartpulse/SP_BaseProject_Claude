@@ -1,72 +1,51 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-JSON_MODE=false
-SHORT_NAME=""
-BRANCH_NUMBER=""
-ARGS=()
-i=1
-while [ $i -le $# ]; do
-    arg="${!i}"
-    case "$arg" in
-        --json) JSON_MODE=true ;;
-        --short-name)
-            if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --short-name requires a value' >&2
-                exit 1
-            fi
-            i=$((i + 1))
-            next_arg="${!i}"
-            if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --short-name requires a value' >&2
-                exit 1
-            fi
-            SHORT_NAME="$next_arg"
-            ;;
-        --number)
-            if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --number requires a value' >&2
-                exit 1
-            fi
-            i=$((i + 1))
-            next_arg="${!i}"
-            if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --number requires a value' >&2
-                exit 1
-            fi
-            case "$next_arg" in
-                ''|*[!0-9]*)
-                    echo 'Error: --number requires a numeric value' >&2
-                    exit 1
-                    ;;
-            esac
-            BRANCH_NUMBER="$next_arg"
-            ;;
-        --help|-h)
-            echo "Usage: $0 [--json] [--short-name NAME] [--number N] DESCRIPTION"
-            echo "  --json       Output in JSON format"
-            echo "  --short-name Custom short name for the branch"
-            echo "  --number N   Specify branch number manually"
-            exit 0
-            ;;
-        *)
-            ARGS+=("$arg")
-            ;;
-    esac
-    i=$((i + 1))
-done
+SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
-FEATURE_DESCRIPTION="${ARGS[*]}"
+parse_create_args "$@"
+
+# --update: reuse the current feature branch/dir; never overwrite an existing spec
+if [ "$UPDATE_MODE" = true ]; then
+    eval "$(get_feature_paths)"
+    if [[ ! "$CURRENT_BRANCH" =~ ^[0-9]{3}- ]]; then
+        echo "ERROR: --update requires a feature branch (or SPECIFY_FEATURE set). Current branch: $CURRENT_BRANCH" >&2
+        exit 1
+    fi
+    mkdir -p "$FEATURE_DIR"
+    SPEC_FILE="$FEATURE_DIR/spec.md"
+    if [ ! -f "$SPEC_FILE" ]; then
+        if [ -f "$REPO_ROOT/templates/spec-template.md" ]; then
+            cp "$REPO_ROOT/templates/spec-template.md" "$SPEC_FILE"
+        else
+            touch "$SPEC_FILE"
+        fi
+    fi
+    FEATURE_NUM="${CURRENT_BRANCH:0:3}"
+    if $JSON_MODE; then
+        printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s","UPDATED":"true"}\n' \
+            "$(json_escape "$CURRENT_BRANCH")" "$(json_escape "$SPEC_FILE")" "$(json_escape "$FEATURE_NUM")"
+    else
+        echo "BRANCH_NAME: $CURRENT_BRANCH"
+        echo "SPEC_FILE: $SPEC_FILE"
+        echo "FEATURE_NUM: $FEATURE_NUM"
+        echo "UPDATED: true"
+    fi
+    exit 0
+fi
+
+FEATURE_DESCRIPTION="${ARGS[*]-}"
 if [ -z "$FEATURE_DESCRIPTION" ]; then
-    echo "Usage: $0 [--json] [--short-name NAME] [--number N] DESCRIPTION" >&2
+    echo "Usage: $0 [--json] [--update] [--short-name NAME] [--number N] DESCRIPTION" >&2
     exit 1
 fi
 
 generate_branch_name() {
     local description="$1"
     local stop_words="^(i|a|an|the|to|for|of|in|on|at|by|with|from|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|should|could|can|may|might|must|shall|this|that|these|those|my|your|our|their|want|need|add|get|set|o|os|as|e|ou|de|em|um|uma|uns|umas|da|do|das|dos|na|no|nas|nos|ao|aos|para|por|com|sem|que|como|ser|ter|seu|sua|seus|suas|meu|minha|nosso|nossa|quero|preciso|criar|adicionar|fazer|novo|nova)$"
-    local clean_name=$(echo "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g')
+    local clean_name=$(transliterate "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g')
     local meaningful_words=()
 
     for word in $clean_name; do
@@ -98,12 +77,9 @@ generate_branch_name() {
         echo "$result"
     else
         local cleaned=$(clean_branch_name "$description")
-        echo "$cleaned" | tr '-' '\n' | grep -v '^$' | head -3 | tr '\n' '-' | sed 's/-$//'
+        echo "$cleaned" | tr '-' '\n' | grep -v '^$' | head -3 | tr '\n' '-' | sed 's/-$//' || true
     fi
 }
-
-SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
 
 REPO_ROOT=$(get_repo_root)
 if has_git; then
@@ -131,27 +107,4 @@ fi
 FEATURE_NUM=$(printf "%03d" "$((10#$BRANCH_NUMBER))")
 BRANCH_NAME=$(build_branch_name "$FEATURE_NUM" "$BRANCH_SUFFIX")
 
-if [ "$HAS_GIT" = true ]; then
-    git checkout -b "$BRANCH_NAME"
-else
-    >&2 echo "[specify] Warning: Git not detected; skipped branch creation"
-fi
-
-FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
-mkdir -p "$FEATURE_DIR"
-
-TEMPLATE="$REPO_ROOT/templates/spec-template.md"
-SPEC_FILE="$FEATURE_DIR/spec.md"
-if [ -f "$TEMPLATE" ]; then
-    cp "$TEMPLATE" "$SPEC_FILE"
-else
-    touch "$SPEC_FILE"
-fi
-
-if $JSON_MODE; then
-    printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s"}\n' "$BRANCH_NAME" "$SPEC_FILE" "$FEATURE_NUM"
-else
-    echo "BRANCH_NAME: $BRANCH_NAME"
-    echo "SPEC_FILE: $SPEC_FILE"
-    echo "FEATURE_NUM: $FEATURE_NUM"
-fi
+create_feature_scaffold "$BRANCH_NAME" "$FEATURE_NUM" "$REPO_ROOT/templates/spec-template.md" "spec.md" "$JSON_MODE"

@@ -3,10 +3,14 @@
 # Convenções (constitution): paths e propriedades JSON em inglês (Regra Geral 5);
 # todo endpoint documentado antes da implementação (Princípio 4, API-First);
 # erros com corpo estruturado; paginação documentada quando houver listagem.
-openapi: 3.0.3
+# Casos de teste de contrato: cada endpoint abaixo deve gerar tarefa de teste no /tasks
+# cobrindo o schema de request/response e os códigos de erro documentados.
+openapi: 3.1.0
 info:
   title: "[Feature] API"
   version: 0.1.0
+security:
+  - bearerAuth: []
 paths:
   /api/[resources]:
     post:
@@ -32,7 +36,68 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Não autenticado
+        "500":
+          description: Erro interno (sem detalhes internos no corpo)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      summary: "[listagem do recurso — paginação obrigatória em coleções]"
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: Lista paginada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceListResponse"
+        "401":
+          description: Não autenticado
+  /api/[resources]/{id}:
+    get:
+      summary: "[busca por id — rastreável a um RF-XXX da spec]"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceResponse"
+        "401":
+          description: Não autenticado
+        "404":
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CreateResourceRequest:
       type: object
@@ -52,6 +117,22 @@ components:
         createdAt:
           type: string
           format: date-time
+    ResourceListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceResponse"
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
     ErrorResponse:
       type: object
       properties:

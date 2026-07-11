@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 JSON_MODE=false
 for arg in "$@"; do
@@ -17,7 +17,7 @@ done
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-eval $(get_feature_paths)
+eval "$(get_feature_paths)"
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
 if [[ ! -d "$FEATURE_DIR" ]]; then
@@ -48,13 +48,8 @@ docs=()
 [[ -f "$QUICKSTART" ]] && docs+=("quickstart.md")
 
 if $JSON_MODE; then
-    if [[ ${#docs[@]} -eq 0 ]]; then
-        json_docs="[]"
-    else
-        json_docs=$(printf '"%s",' "${docs[@]}")
-        json_docs="[${json_docs%,}]"
-    fi
-    printf '{"FEATURE_DIR":"%s","AVAILABLE_DOCS":%s}\n' "$FEATURE_DIR" "$json_docs"
+    json_docs=$(json_array ${docs[@]+"${docs[@]}"})
+    printf '{"FEATURE_DIR":"%s","AVAILABLE_DOCS":%s}\n' "$(json_escape "$FEATURE_DIR")" "$json_docs"
 else
     echo "FEATURE_DIR: $FEATURE_DIR"
     echo "AVAILABLE_DOCS:"

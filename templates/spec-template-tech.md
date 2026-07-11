@@ -1,7 +1,7 @@
 # Especificação Técnica: [TÍTULO]
 
 **Tipo**: [Bug / Melhoria / Refatoração / Performance / Segurança / Débito técnico]  
-**Branch**: `[###-nome-do-branch]`  
+**Branch**: `[###-nome-da-feature]`  
 **Criado**: [DATA]  
 **Status**: Rascunho  
 **Entrada**: Descrição fornecida: "$ARGUMENTS"

@@ -16,7 +16,7 @@ Implemente features do app mobile em React Native + Expo com TypeScript, seguind
 - Garantir comportamento correto com rede instável, app em background e permissões negadas.
 - Manter listas e imagens performáticas em dispositivos modestos.
 
-## Checklist
+## Checklist obrigatório (fonte única das regras mobile — security-reviewer e performance-concurrency-analyst referenciam os itens correspondentes)
 
 - [ ] Telas não chamam a API diretamente — sempre via repository hooks (TanStack Query)
 - [ ] Tokens e credenciais **somente** em `expo-secure-store` — nunca em AsyncStorage ou estado persistido

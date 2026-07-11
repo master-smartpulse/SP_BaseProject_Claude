@@ -1,9 +1,9 @@
 ---
 name: test-designer
-description: Cria testes robustos e realistas que cobrem casos extremos, seguindo TDD. Desenha testes unitários (AAA), de integração e E2E (Playwright web, Maestro mobile), testes de erro, cenários negativos e simula falhas externas. Use ao escrever ou revisar testes, aumentar cobertura, mockar dependências ou quando o usuário pedir desenho de testes, edge cases, E2E ou "como isso pode quebrar?".
+description: Cria testes robustos e realistas que cobrem casos extremos, seguindo TDD. Desenha testes unitários (AAA), de integração e E2E (Playwright web, Maestro mobile), testes de erro, cenários negativos e simula falhas externas. Use ao escrever ou revisar testes, aumentar cobertura, mockar dependências ou quando o usuário pedir desenho de testes, edge cases, E2E ou "como isso pode quebrar?" — nunca para alterar arquitetura ou refatorar código de produção.
 ---
 
-# Test Designer
+# Designer de Testes
 
 ## Papel
 
@@ -30,6 +30,7 @@ Antes de considerar os testes completos, verifique:
 - [ ] **Sem dependência de banco real** em testes unitários (use in-memory ou mocks)
 - [ ] **Casos extremos** cobertos (vazio, null, valores de fronteira, tipos inválidos)
 - [ ] **Ordem TDD respeitada** (teste existe e falha antes da implementação correspondente)
+- [ ] **Evidência red→green citada** (suíte executada antes da implementação — falhando — e depois — passando — com a saída real citada, não presumida)
 
 ## Tipos e níveis de teste
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 JSON_MODE=false
 for arg in "$@"; do
@@ -16,7 +16,7 @@ done
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-eval $(get_feature_paths)
+eval "$(get_feature_paths)"
 
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
@@ -24,6 +24,10 @@ mkdir -p "$FEATURE_DIR"
 
 TEMPLATE="$REPO_ROOT/templates/plan-template.md"
 IMPL_PLAN="$FEATURE_DIR/plan.md"
+if [[ -f "$IMPL_PLAN" ]]; then
+    cp "$IMPL_PLAN" "$IMPL_PLAN.bak"
+    >&2 echo "[plan] Warning: existing plan.md backed up to plan.md.bak before reset from template"
+fi
 if [[ -f "$TEMPLATE" ]]; then
     cp "$TEMPLATE" "$IMPL_PLAN"
 else
@@ -31,11 +35,13 @@ else
 fi
 
 if $JSON_MODE; then
-    printf '{"FEATURE_SPEC":"%s","IMPL_PLAN":"%s","SPECS_DIR":"%s","BRANCH":"%s","HAS_GIT":"%s"}\n' \
-        "$FEATURE_SPEC" "$IMPL_PLAN" "$FEATURE_DIR" "$CURRENT_BRANCH" "$HAS_GIT"
+    printf '{"FEATURE_SPEC":"%s","IMPL_PLAN":"%s","FEATURE_DIR":"%s","BRANCH":"%s","HAS_GIT":"%s"}\n' \
+        "$(json_escape "$FEATURE_SPEC")" "$(json_escape "$IMPL_PLAN")" "$(json_escape "$FEATURE_DIR")" \
+        "$(json_escape "$CURRENT_BRANCH")" "$(json_escape "$HAS_GIT")"
 else
     echo "FEATURE_SPEC: $FEATURE_SPEC"
     echo "IMPL_PLAN: $IMPL_PLAN"
-    echo "SPECS_DIR: $FEATURE_DIR"
+    echo "FEATURE_DIR: $FEATURE_DIR"
     echo "BRANCH: $CURRENT_BRANCH"
+    echo "HAS_GIT: $HAS_GIT"
 fi

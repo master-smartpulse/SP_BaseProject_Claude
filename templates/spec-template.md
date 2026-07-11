@@ -54,6 +54,7 @@ Ao criar esta especificação a partir de um prompt do usuário:
  - Comportamentos de tratamento de erros
  - Requisitos de integração
  - Necessidades de segurança/conformidade
+5. **Resolução**: os marcadores [PRECISA ESCLARECIMENTO] são resolvidos pelo comando `/clarify`, que registra as respostas numa seção `## Esclarecimentos` (criada sob demanda, com subseções `### Sessão [DATA]`) e atualiza os requisitos afetados
 
 ---
 

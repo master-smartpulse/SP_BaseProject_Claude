@@ -1,6 +1,7 @@
 ---
 name: specify
-description: Especificação de produto (PO). Use quando precisar transformar uma ideia ou descrição em uma especificação de feature clara, com requisitos, cenários e critérios de aceite, sem detalhes de implementação.
+description: Especificação de produto (PO) — transforma ideia em spec de feature com requisitos, cenários e critérios de aceite, sem detalhes de implementação. Invocado exclusivamente pelo comando /specify, que executa o script de criação de branch/spec e fornece os caminhos; não usar por auto-delegação.
+model: inherit
 ---
 
 # Agente Specify (Product Owner)

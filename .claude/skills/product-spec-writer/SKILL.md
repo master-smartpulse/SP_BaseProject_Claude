@@ -23,7 +23,8 @@ Antes de considerar uma spec completa, verifique:
 
 - [ ] **Valor está explícito** (por que essa feature; que problema resolve para quem)
 - [ ] **User stories / cenários** estão presentes e testáveis
-- [ ] **Critérios de sucesso** definidos (como sabemos que funcionou)
+- [ ] **Critérios de sucesso** definidos e mensuráveis (como sabemos que funcionou)
+- [ ] **Benchmarks nomeados**: ≥2 referências de mercado concretas (produtos/convenções do domínio) ou justificativa explícita da ausência
 - [ ] **Sem detalhe de implementação** (sem APIs, stack ou estrutura de código na spec)
 - [ ] **Pontos pouco claros** marcados para esclarecimento, não assumidos
 

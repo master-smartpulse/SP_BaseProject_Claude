@@ -1,17 +1,12 @@
 ---
 description: Revisar código e artefatos da sessão contra constitution, arquitetura e padrões do projeto. Gera relatório de conformidade.
+argument-hint: arquivos ou escopo adicional a revisar (opcional)
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 ---
 
-Leia `.claude/agents/review.md` e adote a persona definida. Leia também `.claude/skills/backend-architect/SKILL.md`, `.claude/skills/security-reviewer/SKILL.md`, `.claude/skills/test-designer/SKILL.md` e `.claude/skills/performance-concurrency-analyst/SKILL.md` e aplique os checklists de todas essas skills.
+Leia `.claude/agents/review.md` e adote a persona definida. O agente é a **fonte única do processo de auditoria**: define as skills a carregar (incluindo as condicionais por plataforma, conforme os arquivos em CHANGED_FILES) e como aplicar os checklists — cada SKILL.md é a fonte do seu próprio checklist. Em seguida execute os passos abaixo.
 
-**Skills condicionais por plataforma** (verifique os arquivos em CHANGED_FILES):
-- Se houver código de **frontend web** alterado: leia também `.claude/skills/frontend-engineer/SKILL.md`
-- Se houver código **mobile** (React Native/Expo) alterado: leia também `.claude/skills/mobile-engineer/SKILL.md`
-
-Em seguida execute os passos abaixo.
-
-Com o contexto da sessão atual, faça o seguinte:
+Escopo adicional (opcional): $ARGUMENTS — arquivos ou diretórios a incluir além dos detectados pelo script.
 
 1. Execute o script abaixo usando a ferramenta Bash a partir da raiz do repositório e interprete a saída JSON para obter FEATURE_DIR, AVAILABLE_DOCS e CHANGED_FILES. Todos os caminhos devem ser absolutos.
    ```
@@ -22,41 +17,24 @@ Com o contexto da sessão atual, faça o seguinte:
 2. Carregue **contexto obrigatório**:
    - **OBRIGATÓRIO**: `memory/constitution.md` — princípios e regras gerais
    - **OBRIGATÓRIO**: `docs/arquitetura.md` — padrões arquiteturais e convenções
-   - SE EXISTIR em AVAILABLE_DOCS: spec da feature (para validar aderência funcional)
-   - SE EXISTIR em AVAILABLE_DOCS: plan da feature (para validar aderência técnica)
+   - SE EXISTIR em AVAILABLE_DOCS: spec da feature (aderência funcional) e plan (aderência técnica)
 
-3. Carregue `templates/review-template.md` para entender o formato de saída do relatório.
+3. Carregue `templates/review-template.md` — **fonte única do formato do relatório e do critério de aprovação/reprovação**.
 
-4. Identifique **todos os arquivos a revisar**:
-   - Use CHANGED_FILES retornado pelo script
-   - Se o usuário especificar arquivos ou escopo adicional, inclua-os
-   - Se CHANGED_FILES estiver vazio, peça ao usuário para indicar os arquivos a revisar
+4. Identifique **todos os arquivos a revisar**: CHANGED_FILES + o escopo adicional de $ARGUMENTS. Se o total for vazio, peça ao usuário para indicar os arquivos.
 
-5. Para cada arquivo alterado, leia o conteúdo e aplique os **checklists das skills carregadas**:
-   - **backend-architect**: camadas, SOLID, contratos, dependências injetadas
-   - **security-reviewer**: validação de entrada, dados sensíveis, auth/authz, logging seguro
-   - **test-designer**: cobertura de testes, happy path, erro, edge cases, mocks
-   - **performance-concurrency-analyst**: N+1, async/await, event loop, memória
-   - **frontend-engineer** (se carregada): repository hooks, estados loading/erro/vazio, cache coerente
-   - **mobile-engineer** (se carregada): secure store, offline, permissões, performance de listas
+5. Para cada arquivo, aplique os checklists conforme definido no agente (skills carregadas + Regras Gerais e Checklist de Conformidade da constitution).
 
-6. Aplique também as **regras gerais da constitution**:
-   - TypeScript strict; sem `any` sem justificativa
-   - Comentários apenas quando essenciais
-   - Sem arquivos .md não solicitados
-   - Conventional Commits (se houver commits)
-   - Documentação Swagger atualizada (se endpoints novos)
-   - Aderência à spec e ao plan (se existirem)
+6. **Verificação executável**: se o projeto tiver os comandos configurados (package.json/tsconfig), execute via Bash typecheck (`tsc --noEmit` ou equivalente), lint e a suíte de testes, e inclua o resultado real na seção "Verificação Executável" do relatório. Falha em qualquer um = resultado REPROVADO, independentemente dos demais achados. Se o tooling não existir ainda, registre N/A com o motivo.
 
-7. Gere o **relatório de revisão** usando a estrutura do `templates/review-template.md`:
-   - Classifique cada achado: Crítico / Alto / Médio / Baixo
-   - Inclua: arquivo, regra violada, problema e correção sugerida
-   - Tabela de conformidade por área
-   - Resultado final: Aprovado (zero Crítico + zero Alto) ou Reprovado
+7. Gere o **relatório de revisão** na estrutura do template: achados com severidade, arquivo, regra violada e correção sugerida; tabela de conformidade por área; resultado final conforme o critério do template. **Salve o relatório em `FEATURE_DIR/review.md`** (artefato sancionado do fluxo — constitution, Regra Geral 2; sobrescreva se existir, o relatório reflete o estado atual do branch).
 
-8. Se houver achados Críticos ou Altos, sugira próximos passos (quais arquivos corrigir primeiro).
+8. **Loop de correção** — se REPROVADO:
+   - Converta cada achado Crítico/Alto em task corretiva e apense ao `tasks.md` numa fase **"Correções"** (IDs continuando a sequência; cada task cita o achado, ex.: "T024 Corrigir CRÍTICO-001: ..."). Esta é a única escrita permitida além do relatório e dos arquivos de status.
+   - Sugira o ciclo: `/implement Correções` → novo `/review`.
+   - Se APROVADO: informe que a feature cumpriu o DoD de revisão e **sugira fechar o ciclo git** — abrir o PR com `gh pr create --fill` (se o repo tiver remote GitHub e o usuário aprovar) ou merge conforme o fluxo do time. Não abra o PR sem aprovação explícita (ação externa).
 
-9. **Ao finalizar:** Atualize sempre `IMPLEMENTATION_STATUS.md` (tabela spec × completude) e `FEATURE_LIST.md` (wiki de features do produto). Princípio 8 da Constitution.
+9. **Ao finalizar:** Atualize `IMPLEMENTATION_STATUS.md` (coluna Review e DoD, conforme a fórmula definida no próprio arquivo) e `FEATURE_LIST.md` — a escrita é responsabilidade **deste comando, no contexto principal** (o agente review é read-only e não escreve arquivos). Princípio 8 da Constitution.
 
 **IDIOMA**: Todo o relatório e comunicação em **português (pt-BR)**.
 

@@ -1,7 +1,7 @@
 # macOS
 .DS_Store
 
-# Dependências
+# Dependencies
 node_modules/
 
 # Builds
@@ -9,15 +9,27 @@ dist/
 build/
 .next/
 .expo/
+.turbo/
 coverage/
+*.tsbuildinfo
 
-# Variáveis de ambiente
+# Test artifacts
+playwright-report/
+test-results/
+
+# Environment variables
 .env
 .env.*
 !.env.example
 
-# Configuração local do Claude Code (por máquina — não versionar)
+# Local Claude Code settings (per machine — do not version)
 .claude/settings.local.json
+
+# IDE
+.idea/
+
+# Backups created by workflow scripts (e.g. plan.md.bak)
+*.bak
 
 # Logs
 *.log

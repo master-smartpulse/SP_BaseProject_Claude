@@ -41,6 +41,7 @@ Arquivos, pastas, variáveis, funções, classes, DTOs, paths de API, propriedad
 Se usar Prisma (ou ORM com schema), siga estas convenções para consistência:
 
 - **Idioma**: Todas as tabelas, colunas, índices e nomes no esquema do banco DEVEM estar em **inglês**. O mapeamento no Prisma usa `@map()` e `@@map()` para garantir nomes em inglês no banco, mesmo quando o código use nomes em português no domínio.
+- **Migrations**: toda alteração de schema DEVE ter migration correspondente (`prisma migrate dev` em desenvolvimento, `prisma migrate deploy` no deploy). Migrations aditivas e reversíveis; mudanças breaking seguem expand-contract (adicionar → migrar dados → remover). Ver checklist da skill `data-modeler`.
 - **Colunas no banco**: snake_case em inglês. Todo campo camelCase no código deve mapear para snake_case em inglês (ex.: no Prisma use `@map("snake_case")`):
   - `userId` → `@map("user_id")`
   - `createdAt` → `@map("created_at")`
@@ -102,12 +103,14 @@ Controller (validação de entrada)
     ↓
 Service (orquestrador)
     ↓
-Use Case (caso de uso específico)
+Use Case (caso de uso específico)   ← dispensável em CRUD trivial (ver regra abaixo)
     ↓
 Repository (acesso a dados)
     ↓
 ORM / Banco de Dados
 ```
+
+**Regra de dispensa do UseCase (Constitution, Princípio 1):** operações CRUD triviais — sem regra de negócio composta, sem orquestração de múltiplos repositórios/adapters e sem reuso entre entrypoints — PODEM fluir Controller → Service → Repository. O UseCase é obrigatório quando qualquer uma dessas condições existir. A dispensa não elimina Service nem Repository e deve ser consistente dentro do módulo.
 
 ### Padrões Implementados
 
@@ -164,6 +167,48 @@ Toda integração com serviço externo (e-mail, SMS, pagamento, armazenamento de
 - O módulo registra o adapter via provider/useFactory.
 - Testes usam mocks que implementam a mesma interface.
 
+**Exemplo (NestJS — adapter com token + useFactory):**
+
+```typescript
+// shared/email/email.adapter.ts
+export const EMAIL_ADAPTER = Symbol('EMAIL_ADAPTER');
+
+export interface IEmailAdapter {
+  send(to: string, subject: string, body: string): Promise<void>;
+}
+
+// shared/email/email.module.ts
+@Module({
+  providers: [
+    {
+      provide: EMAIL_ADAPTER,
+      useFactory: (config: ConfigService): IEmailAdapter =>
+        config.get('EMAIL_PROVIDER') === 'smtp'
+          ? new SmtpEmailAdapter(config)
+          : new MockEmailAdapter(),
+      inject: [ConfigService],
+    },
+  ],
+  exports: [EMAIL_ADAPTER],
+})
+export class EmailModule {}
+
+// consumo em um use case (constructor injection)
+constructor(@Inject(EMAIL_ADAPTER) private readonly email: IEmailAdapter) {}
+```
+
+**Exemplo (binding de repository por token):**
+
+```typescript
+export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
+
+@Module({
+  providers: [{ provide: USER_REPOSITORY, useClass: PrismaUserRepository }],
+  exports: [USER_REPOSITORY],
+})
+export class UsersModule {}
+```
+
 #### 7. Convenções de Nomenclatura (Clean Code)
 
 - **Variáveis de entidades**: Nomes completos e autoexplicativos. Evitar abreviações.
@@ -187,9 +232,31 @@ Se usar comunicação em tempo real:
 - Eventos bem definidos (subscribe, progress, completed, error)
 - Documentar contrato de eventos no plano da feature
 
+### Pipeline HTTP (NestJS)
+
+Configuração idiomática obrigatória do pipeline de request:
+
+- **ValidationPipe global** com `whitelist: true` e `forbidNonWhitelisted: true` (rejeita campos não declarados no DTO) e `transform: true`:
+
+```typescript
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
+```
+
+- **Guards** para autenticação/autorização (`JwtAuthGuard`, guards de role/ownership) — controllers não checam permissão manualmente.
+- **Exception filters** para mapear erros de domínio em respostas HTTP com o `ErrorResponse` padrão — sem stack trace ao cliente.
+- **Interceptors** para logging de request/response com correlation id.
+
+### Autenticação e Sessão (obrigatório)
+
+- **Access token curto** (~15 min) + **refresh token com rotação** (refresh usado uma vez é invalidado; reuso detectado → sessão revogada).
+- **Logout** invalida o refresh token no servidor.
+- **Armazenamento no cliente**:
+  - **Web**: cookie `httpOnly` + `Secure` + `SameSite` (preferido) **ou** access token somente em memória com refresh silencioso. **PROIBIDO** token em `localStorage`/`sessionStorage`.
+  - **Mobile**: somente `expo-secure-store` (ver seção Mobile).
+
 ### Variáveis de Ambiente
 
-Manter secrets e configuração em variáveis de ambiente (ex.: `DATABASE_URL`, `JWT_SECRET`, provedores de e-mail/SMS/pagamento, etc.). Não commitar valores reais.
+Manter secrets e configuração em variáveis de ambiente (ex.: `DATABASE_URL`, `JWT_SECRET`, provedores de e-mail/SMS/pagamento, etc.). Não commitar valores reais. No NestJS, acesso via `ConfigModule`/`ConfigService` tipado — sem `process.env` espalhado pelos módulos.
 
 ### Testes
 
@@ -217,6 +284,7 @@ Stack oficial do frontend web (Constitution, Regra Geral 6). Desvios devem ser j
 - **Formulários**: React Hook Form + Zod (ou equivalente)
 - **Estilo**: Tailwind CSS, componentes (ex.: shadcn/ui, Radix UI)
 - **Testes E2E**: Playwright ou equivalente
+- **Sessão/tokens**: cookie httpOnly+Secure+SameSite ou token somente em memória com refresh silencioso — nunca em localStorage (ver "Autenticação e Sessão" na seção Backend)
 
 ### Estrutura de Pastas (exemplo)
 
@@ -350,6 +418,20 @@ User Action → Screen → Hook (useQuery/useMutation) → Repository Hook → A
 - Frontend e Landing consomem a API via HTTP/REST
 - WebSocket quando houver necessidade de tempo real
 - Contratos de API documentados (Swagger/OpenAPI)
+
+### Contrato compartilhado backend ↔ clientes (decisão oficial)
+
+- **Backend** valida entrada com class-validator/class-transformer (idiomático NestJS com ValidationPipe) e publica o contrato via Swagger/OpenAPI.
+- **Clientes (web e mobile)** geram os tipos TypeScript a partir do contrato com `openapi-typescript` (script `generate:api-types` apontando para o JSON do Swagger) — **sem redeclarar shapes manualmente**.
+- Os **schemas Zod** do cliente (formulários, validação em runtime) devem se alinhar aos tipos gerados; divergência entre schema Zod e tipo gerado é bug de contrato.
+- Alternativa registrada: Zod ponta a ponta via `nestjs-zod` com schemas em `packages/shared` — desvio permitido se justificado no plan.md.
+
+### Decisões de engenharia (padrão)
+
+- **Package manager**: pnpm (workspaces para monorepo). Desvios via plan.md.
+- **Monorepo**: estrutura simples com workspaces; adotar Turborepo apenas quando builds/testes ficarem lentos o suficiente para justificar.
+- **Versões mínimas**: Node LTS ≥ 22; TypeScript ≥ 5.5.
+- **Código compartilhado**: `packages/shared` para tipos, schemas e utilitários usados por backend, web e mobile.
 
 ### Princípios
 

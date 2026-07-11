@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 JSON_MODE=false
 for arg in "$@"; do
@@ -17,7 +17,7 @@ done
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-eval $(get_feature_paths)
+eval "$(get_feature_paths)"
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
 if [[ ! -d "$FEATURE_DIR" ]]; then
@@ -52,20 +52,20 @@ if [[ "$HAS_GIT" == "true" ]]; then
     if [[ -n "$merge_base" ]]; then
         while IFS= read -r file; do
             [[ -n "$file" ]] && changed_files+=("$file")
-        done < <(git diff --name-only "$merge_base" HEAD 2>/dev/null)
+        done < <(git -c core.quotepath=false diff --name-only "$merge_base" HEAD 2>/dev/null)
     fi
 
     while IFS= read -r file; do
         [[ -n "$file" ]] && changed_files+=("$file")
-    done < <(git diff --name-only HEAD 2>/dev/null)
+    done < <(git -c core.quotepath=false diff --name-only HEAD 2>/dev/null)
 
     while IFS= read -r file; do
         [[ -n "$file" ]] && changed_files+=("$file")
-    done < <(git diff --name-only --cached 2>/dev/null)
+    done < <(git -c core.quotepath=false diff --name-only --cached 2>/dev/null)
 
     while IFS= read -r file; do
         [[ -n "$file" ]] && changed_files+=("$file")
-    done < <(git ls-files --others --exclude-standard 2>/dev/null)
+    done < <(git -c core.quotepath=false ls-files --others --exclude-standard 2>/dev/null)
 
     if [[ ${#changed_files[@]} -gt 0 ]]; then
         deduped=()
@@ -77,22 +77,11 @@ if [[ "$HAS_GIT" == "true" ]]; then
 fi
 
 if $JSON_MODE; then
-    if [[ ${#docs[@]} -eq 0 ]]; then
-        json_docs="[]"
-    else
-        json_docs=$(printf '"%s",' "${docs[@]}")
-        json_docs="[${json_docs%,}]"
-    fi
-
-    if [[ ${#changed_files[@]} -eq 0 ]]; then
-        json_changed="[]"
-    else
-        json_changed=$(printf '"%s",' "${changed_files[@]}")
-        json_changed="[${json_changed%,}]"
-    fi
+    json_docs=$(json_array ${docs[@]+"${docs[@]}"})
+    json_changed=$(json_array ${changed_files[@]+"${changed_files[@]}"})
 
     printf '{"FEATURE_DIR":"%s","AVAILABLE_DOCS":%s,"CHANGED_FILES":%s}\n' \
-        "$FEATURE_DIR" "$json_docs" "$json_changed"
+        "$(json_escape "$FEATURE_DIR")" "$json_docs" "$json_changed"
 else
     echo "FEATURE_DIR: $FEATURE_DIR"
     echo ""
@@ -106,7 +95,7 @@ else
     check_file "$QUICKSTART" "quickstart.md"
     echo ""
     echo "CHANGED_FILES (${#changed_files[@]}):"
-    for f in "${changed_files[@]}"; do
+    for f in ${changed_files[@]+"${changed_files[@]}"}; do
         echo "  - $f"
     done
 fi

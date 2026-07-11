@@ -26,6 +26,8 @@ Antes de considerar a implementação concluída, verifique:
 - [ ] **Sem `any`** (use tipos adequados ou `unknown`; justifique exceções raras)
 - [ ] **Sem lógica de negócio no controller** (apenas HTTP, validação, chamar service, mapear resposta)
 - [ ] **Dependências injetadas** (injeção por construtor; sem `new` de colaboradores em services/use cases)
+- [ ] **TDD cumprido** (o teste correspondente existia e falhava antes da implementação; agora passa — ciclo red→green respeitado)
+- [ ] **Suíte verde, executada de verdade** (testes do escopo passam; `tsc --noEmit` sem erros; lint sem erros — rodados via terminal, com saída, não presumidos)
 - [ ] **Código limpo** (nomes legíveis, funções pequenas, sem código morto; Refactor Specialist pode refinar depois)
 - [ ] **Comentários apenas quando essenciais** (Regras Gerais: sem comentários a não ser que expliquem o "porquê" não óbvio)
 - [ ] **Sem arquivos .md não solicitados** (Regras Gerais: não criar README, CHANGELOG, etc. sem pedido explícito do usuário)

@@ -8,16 +8,18 @@
 ```
 1. Carregar contexto obrigatório (constitution, arquitetura)
    → Se não encontrado: ERRO "Documentos de governança não encontrados"
-2. Carregar contexto da feature (spec, plan) quando disponível
+2. Carregar contexto da feature (spec, plan, tasks) quando disponível
 3. Identificar arquivos alterados via script ou git diff
    → Se nenhum arquivo: AVISO "Nenhum arquivo alterado encontrado"
 4. Para cada arquivo alterado:
    → Classificar tipo (controller, service, use-case, repository, component, screen, hook, teste, config, outro)
    → Aplicar checklists das skills relevantes ao tipo
-5. Consolidar achados por severidade
-6. Gerar tabela de conformidade por área
-7. Determinar resultado: APROVADO (zero Crítico + zero Alto) ou REPROVADO
-8. Retornar: relatório completo
+5. Executar verificação executável (typecheck, lint, testes) quando o tooling existir
+   → Falha em qualquer uma: resultado REPROVADO
+6. Consolidar achados por severidade
+7. Gerar tabela de conformidade por área e cobertura de requisitos
+8. Determinar resultado: APROVADO (zero Crítico + zero Alto + verificação executável verde ou N/A) ou REPROVADO
+9. Salvar em specs/[###-nome-da-feature]/review.md e retornar relatório
 ```
 
 ---
@@ -26,6 +28,18 @@
 
 - **Crítico**: [N] | **Alto**: [N] | **Médio**: [N] | **Baixo**: [N]
 - **Resultado**: [APROVADO / REPROVADO]
+
+---
+
+## Verificação Executável
+
+_Comandos executados de fato via terminal — falha em qualquer um determina REPROVADO. N/A apenas quando o tooling ainda não existe no projeto (justificar)._
+
+| Verificação | Comando | Status | Resumo da saída |
+|-------------|---------|--------|-----------------|
+| Typecheck | [ex.: `npx tsc --noEmit`] | [✅/❌/N/A] | [ex.: 0 erros / lista resumida] |
+| Lint | [ex.: `npx eslint .`] | [✅/❌/N/A] | [breve] |
+| Testes | [ex.: `npm test`] | [✅/❌/N/A] | [ex.: 42 passed, 0 failed] |
 
 ---
 
@@ -89,6 +103,16 @@ _Observações menores. Podem ser tratadas em momento oportuno._
 
 ---
 
+## Cobertura de Requisitos
+
+_Preenchida a partir da tabela "Cobertura de Requisitos" do tasks.md, conferida contra o código revisado._
+
+| Requisito | Implementado | Testado | Observação |
+|-----------|--------------|---------|------------|
+| RF-001 | [✅/⚠️/❌] | [✅/⚠️/❌] | [breve] |
+
+---
+
 ## Arquivos Revisados
 
 | Arquivo | Tipo | Achados |
@@ -99,11 +123,11 @@ _Observações menores. Podem ser tratadas em momento oportuno._
 
 ## Próximos Passos
 
-_Preencher apenas se REPROVADO_
+_Preencher apenas se REPROVADO — loop de correção do workflow_
 
-1. [Corrigir achado CRÍTICO-001 em path/to/file.ts]
-2. [Corrigir achado ALTO-001 em path/to/file.ts]
-3. [Rodar /review novamente após correções]
+1. [Achados Crítico/Alto convertidos em tasks corretivas na fase "Correções" do tasks.md: T0XX–T0YY]
+2. Rodar `/implement Correções` para executar apenas as tasks corretivas
+3. Rodar `/review` novamente — a feature só cumpre o DoD com relatório APROVADO
 
 ---
 
@@ -114,8 +138,10 @@ _PORTÃO: Verificado antes de emitir o relatório_
 - [ ] Contexto carregado (constitution, arquitetura, spec e plan quando disponíveis)
 - [ ] Todos os arquivos alterados foram revisados
 - [ ] Checklists de arquitetura, segurança, testes e performance aplicados (e frontend web/mobile quando houver código dessas plataformas)
+- [ ] Verificação executável rodada e registrada (ou N/A justificado)
 - [ ] Cada achado tem severidade, arquivo, regra violada e correção sugerida
-- [ ] Tabela de conformidade preenchida
+- [ ] Tabelas de conformidade e de cobertura de requisitos preenchidas
 - [ ] Resultado final determinado (APROVADO/REPROVADO)
+- [ ] Relatório salvo em specs/[###-nome-da-feature]/review.md
 
 ---

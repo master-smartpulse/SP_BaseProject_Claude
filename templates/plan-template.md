@@ -21,7 +21,9 @@ description: 'Template de plano de implementação para desenvolvimento de featu
    → Se não houver justificativa possível: ERRO "Simplifique a abordagem primeiro"
    → Atualizar Rastreamento de Progresso: Verificação Inicial da Constituição
 5. Executar Fase 0 → research.md
-   → Se restar PRECISA ESCLARECIMENTO: ERRO "Resolver incógnitas"
+   → PRECISA ESCLARECIMENTO de PRODUTO (escopo, permissões, retenção, UX): PARE e sugira /clarify
+     — decisões de produto são do usuário, não da pesquisa técnica
+   → Se restar PRECISA ESCLARECIMENTO técnico: ERRO "Resolver incógnitas"
 6. Executar Fase 1 → contracts, data-model.md, quickstart.md.
 7. Reavaliar a seção Verificação da Constituição
    → Se novas violações: Refatorar design, voltar à Fase 1
@@ -32,8 +34,8 @@ description: 'Template de plano de implementação para desenvolvimento de featu
 
 **IMPORTANTE**: O comando /plan executa os passos 1-9 e PARA após descrever a abordagem da Fase 2 (passo 8). A criação do tasks.md e a implementação são de outros comandos:
 
-- Fase 2: o comando /tasks cria o tasks.md
-- Fases 3-4: Execução da implementação (manual ou via ferramentas)
+- Fase 3: o comando /tasks cria o tasks.md
+- Fases 4-5: Implementação e validação (comando /implement e /review)
 
 ## Resumo
 
@@ -55,7 +57,7 @@ description: 'Template de plano de implementação para desenvolvimento de featu
 
 _PORTÃO: Deve passar antes da pesquisa da Fase 0. Reverificar após o design da Fase 1._
 
-[Critérios definidos com base no arquivo da constituição. Para features com frontend: incluir verificação de alinhamento ao design system (design-boilerplate quando existir — Regras Gerais). Verificar Stack Padrão TypeScript conforme o Tipo de Projeto (Regra Geral 6, Constitution v1.2.0).]
+[Critérios definidos com base no arquivo da constituição. Para features com frontend: incluir verificação de alinhamento ao design system (design-boilerplate quando existir — Regras Gerais). Verificar Stack Padrão TypeScript conforme o Tipo de Projeto (Regra Geral 6 da Constitution).]
 
 ## Estrutura do Projeto
 
@@ -68,7 +70,7 @@ specs/[###-feature]/
 ├── data-model.md        # Saída da Fase 1 (comando /plan)
 ├── quickstart.md        # Saída da Fase 1 (comando /plan)
 ├── contracts/           # Saída da Fase 1 (comando /plan)
-└── tasks.md             # Saída da Fase 2 (comando /tasks - NÃO criado pelo /plan)
+└── tasks.md             # Saída da Fase 3 (comando /tasks - NÃO criado pelo /plan)
 ```
 
 ### Código Fonte (raiz do repositório)
@@ -126,7 +128,7 @@ mobile-app/                  # React Native + Expo (TypeScript)
 ## Fase 0: Esboço e Pesquisa
 
 1. **Extrair incógnitas do Contexto Técnico** acima:
- - Para cada PRECISA ESCLARECIMENTO → tarefa de pesquisa
+ - Para cada PRECISA ESCLARECIMENTO **técnico** → tarefa de pesquisa (os de natureza de **produto** devem ter sido resolvidos via /clarify — se restarem, sugira /clarify antes de prosseguir)
  - Para cada dependência → tarefa de melhores práticas
  - Para cada integração → tarefa de padrões
 
@@ -139,7 +141,7 @@ mobile-app/                  # React Native + Expo (TypeScript)
      Tarefa: "Encontrar melhores práticas para {tech} em {domínio}"
    ```
 
-3. **Consolidar achados** em `research.md` no formato:
+3. **Consolidar achados** em `research.md` (use `templates/research-template.md` como base), uma seção por incógnita:
  - Decisão: [o que foi escolhido]
  - Justificativa: [por que foi escolhido]
  - Alternativas consideradas: [o que mais foi avaliado]
@@ -160,16 +162,16 @@ _Pré-requisitos: research.md completo_
  - Usar padrões REST/GraphQL
  - Saída do schema OpenAPI/GraphQL em `/contracts/`
 
-3. **Gerar testes de contrato** a partir dos contratos:
- - Um arquivo de teste por endpoint
- - Assertar schemas de request/response
- - Testes devem falhar (ainda sem implementação)
+3. **Especificar os casos de teste de contrato** a partir dos contratos (sem criar arquivos de teste — isso é responsabilidade do fluxo /tasks → /implement):
+ - Um caso de teste por endpoint, documentado no próprio contrato ou no quickstart
+ - Cobrir schemas de request/response e códigos de erro
+ - O /tasks converterá cada caso em tarefa de teste que DEVE falhar antes da implementação
 
 4. **Extrair cenários de teste** das histórias de usuário (use `templates/quickstart-template.md` como base para o quickstart.md):
  - Cada história → cenário de teste de integração
  - Teste quickstart = passos de validação da história
 
-**Saída**: data-model.md, /contracts/*, testes falhando, quickstart.md
+**Saída**: data-model.md, /contracts/* (com casos de teste de contrato especificados), quickstart.md
 
 ## Fase 2: Abordagem de Planejamento de Tarefas
 
@@ -178,19 +180,18 @@ _Esta seção descreve o que o comando /tasks fará - NÃO executar durante o /p
 **Estratégia de Geração de Tarefas**:
 
 - Carregar `templates/tasks-template.md` como base
-- Gerar tarefas a partir dos docs de design da Fase 1 (contratos, modelo de dados, quickstart)
-- Cada contrato → tarefa de teste de contrato [P]
-- Cada entidade → tarefa de criação de modelo [P]
-- Cada história de usuário → tarefa de teste de integração
-- Tarefas de implementação para fazer os testes passarem
+- Estrutura de entrega incremental: Setup → Fundação (infra compartilhada) → **uma fase por user story** (testes da história → implementação → checkpoint validável) → Polish
+- Cada endpoint dos contratos → teste de contrato [P] + implementação, na fase da história que atende
+- Cada entidade compartilhada → tarefa de modelo [P] (+ migration) na Fundação
+- Toda task derivada de requisito rastreia (RF-xxx); tabela de Cobertura de Requisitos obrigatória
 
 **Estratégia de Ordenação**:
 
-- Ordem TDD: Testes antes da implementação
-- Ordem de dependência: Modelos antes de serviços antes de UI
+- TDD dentro de cada história: testes antes da implementação
+- Ordem de dependência: Fundação antes das histórias; modelos antes de serviços antes de UI
 - Marcar [P] para execução paralela (arquivos independentes)
 
-**Saída Estimada**: 25-30 tarefas numeradas e ordenadas em tasks.md
+**Saída Estimada**: 20-40 tarefas numeradas e ordenadas em tasks.md, proporcional ao nº de user stories
 
 **IMPORTANTE**: Esta fase é executada pelo comando /tasks, NÃO pelo /plan
 
@@ -198,8 +199,8 @@ _Esta seção descreve o que o comando /tasks fará - NÃO executar durante o /p
 
 _Estas fases estão fora do escopo do comando /plan_
 
-**Fase 3**: Execução de tarefas (comando /tasks cria tasks.md) 
-**Fase 4**: Implementação (executar tasks.md seguindo princípios da constituição) 
+**Fase 3**: Geração de tarefas (comando /tasks cria tasks.md) 
+**Fase 4**: Implementação (comando /implement executa o tasks.md seguindo princípios da constituição) 
 **Fase 5**: Validação (rodar testes, executar quickstart.md, validação de performance)
 
 ## Rastreamento de Complexidade
@@ -233,4 +234,4 @@ _Este checklist é atualizado durante o fluxo de execução_
 
 ---
 
-_Baseado na Constituição v1.2.0 - Ver `memory/constitution.md`_
+_Baseado na Constituição vigente - Ver `memory/constitution.md`_

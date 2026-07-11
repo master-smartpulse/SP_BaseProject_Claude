@@ -1,6 +1,7 @@
 ---
 name: backend-architect
-description: Projeta e valida arquitetura backend escalável, desacoplada e testável. Define separação de camadas (Controller → Service → UseCase → Repository), aplica SOLID, contratos claros e consistência estrutural. Use ao desenhar ou revisar arquitetura backend, estrutura de módulos ou limites entre camadas, ou quando o usuário pedir revisão arquitetural ou perspectiva de Principal Engineer.
+description: Projeta e valida arquitetura backend escalável, desacoplada e testável. Define separação de camadas (Controller → Service → UseCase → Repository), aplica SOLID, contratos claros e consistência estrutural. Use ao desenhar ou revisar arquitetura backend, estrutura de módulos ou limites entre camadas do código deste projeto, ou quando o usuário pedir revisão arquitetural ou perspectiva de Principal Engineer — para dúvidas conceituais sobre padrões em geral, use tech-expert.
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Arquiteto Backend
@@ -45,6 +46,7 @@ Stack oficial: NestJS + Prisma (constitution, Regra Geral 6). Desvios de stack d
 - Criar ou alterar testes
 - Refatorar nomes ou estilo
 - Corrigir bugs específicos
+- Orientação conceitual genérica sobre padrões/DDD/boas práticas sem relação com o código deste repo (tech-expert)
 
 ## Estilo de saída
 

@@ -1,0 +1,60 @@
+# CI do kit e do projeto derivado (Constitution, Princípio 7).
+# - Job "kit-scripts": valida os scripts bash do próprio kit (sempre roda).
+# - Job "app": lint + typecheck + testes + build do projeto — ativa automaticamente
+#   quando existir package.json na raiz. Ajuste os comandos à estrutura do seu
+#   projeto (ex.: monorepo pnpm: rode por workspace ou via turbo).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  kit-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            shellcheck -S warning scripts/bash/*.sh scripts/bash/hooks/*.sh scripts/tests/*.sh
+          else
+            echo "shellcheck not available; skipping"
+          fi
+      - name: Kit self-tests
+        run: bash scripts/tests/run-tests.sh
+
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect app
+        id: detect
+        run: |
+          if [ -f package.json ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-node@v4
+        if: steps.detect.outputs.present == 'true'
+        with:
+          node-version: 22
+      - name: Install pnpm
+        if: steps.detect.outputs.present == 'true'
+        run: corepack enable && corepack prepare pnpm@latest --activate
+      - name: Install dependencies
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm run lint
+      - name: Typecheck
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm run typecheck --if-present || npx tsc --noEmit
+      - name: Tests
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm run test
+      - name: Build
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm run build
+      - name: No app yet
+        if: steps.detect.outputs.present == 'false'
+        run: echo "package.json ausente — job de app inativo até o projeto ter código."

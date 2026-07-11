@@ -16,7 +16,7 @@ Implemente a **engenharia** do frontend web em React + TypeScript seguindo `docs
 - Garantir que toda tela com dados remotos trate **loading, erro e vazio**.
 - Formulários com React Hook Form + Zod, com schema alinhado ao contrato da API.
 
-## Checklist
+## Checklist obrigatório
 
 - [ ] Componentes não chamam a API diretamente — sempre via hooks de repository (`use-{entity}-queries.ts` / `use-{entity}-mutations.ts`)
 - [ ] Estados de loading, erro e vazio implementados em toda tela com dados remotos

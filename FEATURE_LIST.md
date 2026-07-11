@@ -2,7 +2,7 @@
 
 **O que é:** Documento que descreve todas as funcionalidades do produto — o que cada parte faz e o que o usuário pode fazer. Use para onboarding, vendas e alinhamento com stakeholders.
 
-**IMPORTANTE:** Ao finalizar qualquer comando do workflow (`/specify`, `/specify-tech`, `/plan`, `/tasks`, `/implement`, `/review`, `/constitution`), atualize este arquivo e o `IMPLEMENTATION_STATUS.md`.
+**IMPORTANTE:** Ao finalizar os comandos que mudam estado de feature (`/specify`, `/specify-tech`, `/implement`, `/review` e `/specify-design` quando cria/altera funcionalidade visível), atualize este arquivo e o `IMPLEMENTATION_STATUS.md`. Os demais comandos (`/plan`, `/tasks`, `/clarify`, `/analyze`, `/constitution`) não geram essa obrigação (Constitution, Princípio 8).
 
 ---
 

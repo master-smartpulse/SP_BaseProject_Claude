@@ -1,13 +1,14 @@
 {
+  // Extensões condicionais por plataforma: adicione "expo.vscode-expo-tools" em projetos com mobile (React Native/Expo)
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "ms-vscode.vscode-typescript-next",
     "streetsidesoftware.code-spell-checker",
     "streetsidesoftware.code-spell-checker-portuguese-brazilian",
     "eamodio.gitlens",
     "usernamehw.errorlens",
     "bradlc.vscode-tailwindcss",
-    "Prisma.prisma"
+    "Prisma.prisma",
+    "ms-playwright.playwright"
   ]
 }
