@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluxos & regras de negócio · Smart Diet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  :root{ --green:#2C4A3B; --gold:#A9824C; --gold-l:#CBA96B; --sand:#E7D3A6; --ink:#2E2A22; --mut:#8A7E68; --line:#E6DCC6; --cream:#FBF7EF; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); background:#EDE5D4; line-height:1.65; }
+  .wrap{ max-width:840px; margin:0 auto; padding:52px 28px 120px; background:var(--cream); margin-top:-20px; border-radius:16px 16px 0 0; box-shadow:0 -1px 0 var(--line); }
+  header.top{ background:linear-gradient(160deg,#2C4A3B,#1d3327); color:#F4ECD8; padding:44px 28px 40px; }
+  header.top .inner{ max-width:840px; margin:0 auto; }
+  header.top .home{ display:inline-flex; align-items:center; gap:8px; color:var(--sand); text-decoration:none; font-size:13px; font-weight:600; margin-bottom:26px; opacity:.85; }
+  header.top .home:hover{ opacity:1; }
+  header.top .kick{ font-size:12.5px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--sand); }
+  header.top h1{ font-family:'Spectral',serif; font-weight:800; font-size:44px; line-height:1.08; margin-top:12px; }
+  h2{ font-family:'Spectral',serif; font-weight:700; font-size:29px; color:var(--green); margin:52px 0 8px; padding-bottom:12px; border-bottom:2px solid var(--line); }
+  h3{ font-family:'Spectral',serif; font-weight:700; font-size:21px; color:var(--ink); margin:34px 0 6px; }
+  h4{ font-weight:700; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); margin:26px 0 4px; }
+  p{ margin:12px 0; color:#3a352b; }
+  strong{ color:var(--ink); font-weight:700; }
+  a{ color:var(--gold); }
+  hr{ border:none; border-top:1px solid var(--line); margin:44px 0; }
+  ul,ol{ margin:12px 0 12px 6px; padding-left:22px; }
+  li{ margin:6px 0; padding-left:4px; color:#3a352b; }
+  li::marker{ color:var(--gold-l); font-weight:700; }
+  blockquote{ background:#fff; border-left:4px solid var(--gold-l); border-radius:0 10px 10px 0; padding:16px 22px; margin:22px 0; color:#4a4436; box-shadow:0 1px 2px rgba(80,60,25,.06); }
+  code{ font-family:ui-monospace,Menlo,monospace; font-size:.86em; background:#EFE7D6; color:#7a5a26; padding:1.5px 6px; border-radius:5px; }
+  img{ max-width:100%; height:auto; border-radius:12px; border:1px solid var(--line); margin:20px 0; box-shadow:0 6px 20px -12px rgba(60,45,20,.4); }
+  footer.doc{ max-width:840px; margin:0 auto; padding:36px 28px; color:var(--mut); font-size:13px; text-align:center; }
+</style>
+</head>
+<body>
+<header class="top"><div class="inner">
+  <a class="home" href="index.html">&larr; Voltar ao início do pacote</a>
+  <div class="kick">Jornadas · regras · LGPD/CFN</div>
+  <h1>Fluxos & regras de negócio</h1>
+</div></header>
+<main class="wrap">
+<p><strong>Objetivo deste documento:</strong> servir de briefing para desenvolver o design da aplicação (telas, protótipo ou código de UI). Reúne a visão do produto, as telas-referência, os fluxos do usuário e as regras de negócio. Complementa <code>benchmark-crm-nutricionista.md</code> e <code>referencias-e-arquitetura-mvp.md</code>.</p>
+<hr>
+<h2>1. Visão em uma frase</h2>
+<p>Um CRM web para a nutricionista gerenciar seus pacientes, onde <strong>o WhatsApp é o canal principal do paciente</strong>: tudo que ele envia (foto da refeição, áudio, texto, check-ins) é interpretado por IA e vira evento na timeline do perfil dele, pronto para a nutricionista revisar e agir.</p>
+<p><strong>Diferencial central:</strong> nenhum concorrente (BR ou internacional) usa o WhatsApp como canal que <em>alimenta o prontuário</em>. Hoje ele serve só para lembretes. Essa é a aposta.</p>
+<p><strong>Princípios de design:</strong></p>
+<ul>
+<li>Verde clínico discreto como cor de marca (saúde séria, não "fitness app").</li>
+<li>A IA é sempre rascunho com revisão humana — nunca decide sozinha (respeita a responsabilidade do CFN).</li>
+<li>Densidade de prontuário: muita informação por tela, cards compactos, sem scroll infinito. O uso real é a nutricionista batendo o olho antes/durante a consulta.</li>
+</ul>
+<hr>
+<h2>2. Telas-referência</h2>
+<h3>2.1 Tela de perfil do paciente (a tela central)</h3>
+<p><img src="imagens/02-mockup-perfil-paciente.png" alt="Mockup da tela de perfil do paciente"></p>
+<p>Estrutura: cabeçalho com identificação + status de conexão do WhatsApp; coluna esquerda com a <strong>timeline viva</strong> (eventos do WhatsApp, cada um com ação de revisão/resposta); coluna direita com o lado clínico (evolução, plano/prescrições/exames, resumo IA pré-consulta).</p>
+<h3>2.2 Arquitetura do MVP (contexto técnico)</h3>
+<p><img src="imagens/01-arquitetura-mvp.png" alt="Diagrama da arquitetura do MVP"></p>
+<p>Paciente → WhatsApp Cloud API oficial → backend (ingestão + IA de parsing) → banco no Brasil → CRM web da nutricionista. Integrações (Health Connect, pagamentos, base nutricional) entram em fase posterior.</p>
+<hr>
+<h2>3. Fluxos do usuário</h2>
+<h3>Fluxo 1 — Onboarding do paciente</h3>
+<ol>
+<li>Nutricionista cadastra o paciente no CRM (nome, contato, objetivo).</li>
+<li>Sistema envia ao paciente, pelo WhatsApp, o termo de consentimento (TCLE + LGPD) com finalidades separadas.</li>
+<li>Paciente aceita; consentimento é registrado com data/hora.</li>
+<li>Vínculo WhatsApp ↔ perfil é ativado; status do paciente passa a "ativo".</li>
+</ol>
+<h3>Fluxo 2 — Registro de refeição por foto (o coração do produto)</h3>
+<ol>
+<li>Paciente fotografa a refeição e envia no WhatsApp.</li>
+<li>Webhook recebe a mídia; backend valida consentimento e tipo.</li>
+<li>IA (visão) identifica alimentos e estima porções/macros.</li>
+<li>Evento entra na timeline com status <strong>"a revisar"</strong> e a estimativa.</li>
+<li>Nutricionista confirma ou ajusta; o dado consolida no diário/evolução.</li>
+<li>(Opcional) Nutricionista responde pelo CRM e a mensagem sai no WhatsApp dela.</li>
+</ol>
+<h3>Fluxo 3 — Check-in automático</h3>
+<ol>
+<li>Em horários definidos, o sistema envia perguntas curtas (hidratação, sono, humor, peso) via template.</li>
+<li>Resposta do paciente é estruturada e vira evento na timeline.</li>
+<li>Métricas alimentam os cards de evolução e os alertas de adesão.</li>
+</ol>
+<h3>Fluxo 4 — Mensagem livre do paciente</h3>
+<ol>
+<li>Paciente manda uma dúvida ("posso trocar o lanche?").</li>
+<li>Mensagem aparece na timeline; abre janela de atendimento de 24h (gratuita).</li>
+<li>Nutricionista responde pelo CRM dentro da janela.</li>
+</ol>
+<h3>Fluxo 5 — Preparação para a consulta</h3>
+<ol>
+<li>Antes da consulta, IA gera um resumo do período (adesão, registros, peso, dúvidas).</li>
+<li>Nutricionista revisa o resumo, ajusta plano/prescrições e registra a evolução.</li>
+<li>Documentos clínicos (plano, prescrição) são gerados em PDF assinado e disponibilizados por link autenticado.</li>
+</ol>
+<h3>Fluxo 6 — Prescrição e exames</h3>
+<ol>
+<li>Nutricionista monta plano alimentar (editor com base TACO/TBCA) e prescreve suplementos do catálogo.</li>
+<li>Gera PDF com data, CRN, identificação do paciente e assinatura eletrônica.</li>
+<li>Solicita exames; quando o paciente envia resultados, eles entram no perfil com marcadores e histórico.</li>
+</ol>
+<hr>
+<h2>4. Regras de negócio</h2>
+<h3>4.1 Pacientes e perfil</h3>
+<ul>
+<li>Um paciente pertence a uma nutricionista; o vínculo WhatsApp é único por número.</li>
+<li>Status do paciente: <code>pré-cadastro</code> → <code>ativo</code> → <code>inativo</code>/<code>arquivado</code>. Sem consentimento aceito, o paciente não recebe nem envia mensagens automatizadas.</li>
+<li>Todo dado vindo do WhatsApp é associado ao paciente pelo número de origem; número não reconhecido não cria perfil automaticamente.</li>
+</ul>
+<h3>4.2 Timeline e IA</h3>
+<ul>
+<li>Todo evento gerado por IA nasce com status <strong>"a revisar"</strong>; só conta para evolução/relatórios depois de confirmado pela nutricionista.</li>
+<li>A estimativa de IA é exibida sempre como aproximação (ex.: "~520 kcal"), nunca como medida exata.</li>
+<li>A nutricionista pode editar qualquer estimativa; a versão revisada é a oficial.</li>
+<li>Eventos são imutáveis após registro (auditoria): correções geram nova versão, não apagam a original.</li>
+</ul>
+<h3>4.3 WhatsApp e mensageria</h3>
+<ul>
+<li>Apenas API oficial da Meta (Cloud API, direta ou via BSP). APIs não oficiais são proibidas.</li>
+<li>Mensagens iniciadas pela clínica fora da janela de 24h exigem template aprovado (categoria utility para lembretes/check-ins).</li>
+<li>Respostas dentro da janela de 24h aberta por mensagem do paciente são livres e sem custo de template.</li>
+<li>Conteúdo clínico sensível (exames, diagnósticos, prescrição) <strong>não trafega como texto no WhatsApp</strong> — apenas notificação + link autenticado para o portal.</li>
+<li>Limite de frequência: respeitar o teto da Meta para mensagens de marketing por usuário/dia.</li>
+</ul>
+<h3>4.4 Consentimento e privacidade (LGPD)</h3>
+<ul>
+<li>Consentimento é específico por finalidade (lembretes, plano, marketing) e revogável a qualquer momento.</li>
+<li>Cada consentimento e revogação é registrado com data/hora e finalidade.</li>
+<li>O paciente pode solicitar acesso, correção, exclusão e <strong>portabilidade</strong> dos próprios dados; o sistema precisa suportar exportação completa.</li>
+<li>Dados de saúde são sensíveis: criptografia em repouso e em trânsito, logs de acesso, servidores preferencialmente no Brasil.</li>
+</ul>
+<h3>4.5 Documentos clínicos e CFN</h3>
+<ul>
+<li>Plano alimentar e prescrição geram documento datado, com identificação do paciente, nome e CRN da nutricionista e assinatura eletrônica.</li>
+<li>Prontuário tem retenção mínima de 20 anos após o último registro.</li>
+<li>Atendimento remoto exige nutricionista cadastrada no e-Nutricionista e TCLE aceito antes da primeira interação.</li>
+<li>Prescrição de suplementos segue o rol permitido ao nutricionista; a responsabilidade técnica é da profissional.</li>
+</ul>
+<h3>4.6 Agenda e financeiro</h3>
+<ul>
+<li>Agendamento dispara lembrete automático via WhatsApp (template utility).</li>
+<li>Cobrança pode ser avulsa ou recorrente; o vencimento e o reajuste devem ser transparentes ao paciente (evitar a dor de reajuste-surpresa dos concorrentes).</li>
+</ul>
+<h3>4.7 Acesso e papéis</h3>
+<ul>
+<li>Papéis: nutricionista (acesso total ao próprio conjunto de pacientes) e, opcionalmente, secretária (agenda e cadastro, sem prontuário clínico).</li>
+<li>Autenticação da nutricionista com 2FA; paciente se identifica pelo número do WhatsApp.</li>
+</ul>
+<hr>
+<h2>5. Escopo por fase (para priorizar o design)</h2>
+<p><strong>Fase 1 — núcleo que substitui o software atual:</strong> cadastro/prontuário, plano alimentar, prescrição/exames, antropometria/evolução, agenda. WhatsApp passivo (tudo que o paciente envia cai na timeline; resposta pelo CRM).</p>
+<p><strong>Fase 2 — IA alimentando o perfil:</strong> registro por foto/texto/áudio com IA, check-ins automáticos, resumo pré-consulta, alertas de desengajamento.</p>
+<p><strong>Fase 3 — diferenciação:</strong> portal/PWA do paciente, pagamentos recorrentes, integrações Apple Health / Google Health Connect, AI Scribe.</p>
+<hr>
+<h2>6. Telas a desenhar (sugestão de backlog de UI)</h2>
+<ol>
+<li>Lista/dashboard de pacientes (busca, status, alertas de adesão).</li>
+<li>Perfil do paciente com timeline (tela central — ver mockup).</li>
+<li>Editor de plano alimentar.</li>
+<li>Tela de prescrição de suplementos + solicitação de exames.</li>
+<li>Antropometria e gráficos de evolução.</li>
+<li>Agenda e financeiro.</li>
+<li>Onboarding/consentimento do paciente.</li>
+<li>Visão do paciente (portal/PWA) — fase 3.</li>
+</ol>
+<hr>
+<p><em>As imagens referenciadas (<code>01-arquitetura-mvp.png</code>, <code>02-mockup-perfil-paciente.png</code>) estão na mesma pasta deste documento. Regras regulatórias resumidas aqui; ver o benchmark para fontes e detalhes das resoluções do CFN e da LGPD.</em></p>
+</main>
+<footer class="doc">Smart Diet · CRM de Nutrição — pacote de handoff · atualizado em jul/2026</footer>
+</body>
+</html>
