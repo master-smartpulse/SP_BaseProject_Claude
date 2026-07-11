@@ -13,11 +13,11 @@
 
 ---
 
-| Spec | Spec | Plan | Tasks | Impl (%) | Review | DoD |
-|------|:----:|:----:|:-----:|:--------:|:------:|:---:|
+| Feature | Spec | Plan | Tasks | Impl (%) | Review | DoD |
+|---------|:----:|:----:|:-----:|:--------:|:------:|:---:|
 | (nenhuma) | — | — | — | — | — | — |
 
-**Legenda:** Spec/Plan/Tasks: ✓ = artefato existe e completo | Impl (%): fórmula acima | Review: APROVADO / REPROVADO / — | DoD: PRONTA / EM ANDAMENTO
+**Legenda:** Feature: diretório em specs/ | Spec/Plan/Tasks: ✓ = artefato existe e completo | Impl (%): fórmula acima | Review: APROVADO / REPROVADO / — | DoD: PRONTA / EM ANDAMENTO
 
 ---
 

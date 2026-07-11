@@ -42,6 +42,6 @@ Antes de dar o tasks.md por concluído, verifique:
 - [ ] Ordem TDD respeitada; cada contrato/entidade com task de teste
 - [ ] Casos de teste descritos: cenário feliz, erro, edge cases (test-designer)
 - [ ] [P] correto (paralelo onde arquivos diferentes; sequencial onde mesmo arquivo)
-- [ ] Cobertura: todo requisito da spec (RF-XXX, cenários de aceite) tem pelo menos uma task que o atende; todo artefato do plan (contrato, entidade, endpoint) tem task correspondente. Nenhum item da spec ou do plan fica sem task
+- [ ] Cobertura: todo requisito da spec (RF-XXX; em specs técnicas, CA-XXX) tem pelo menos uma task de implementação **e** uma task de teste; todo artefato do plan (contrato, entidade, endpoint) tem task correspondente; tabela de Cobertura de Requisitos do template preenchida. Nenhum item da spec ou do plan fica sem task
 
 Quando atuar como este subagent, priorize que o Dev consiga ler, executar e atender exatamente à especificação e ao plano, com cobertura de testes clara.

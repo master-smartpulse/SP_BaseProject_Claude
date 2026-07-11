@@ -1,10 +1,10 @@
 ---
 description: Criar ou atualizar a especificação técnica para correção de bugs, melhorias, refatoração ou débito técnico.
 argument-hint: descrição do bug, melhoria ou refatoração
-allowed-tools: Bash, Read, Write, Edit
+allowed-tools: Bash, Read, Write, Edit, Task
 ---
 
-Leia `.claude/agents/specify-tech.md` e adote a persona definida. Leia também `.claude/skills/tech-expert/SKILL.md` (consulta obrigatória em toda execução) e incorpore a perspectiva do tech-expert na spec. Em seguida execute os passos abaixo.
+Leia `.claude/agents/specify-tech.md` e adote a persona definida. O agente define as skills a carregar (tech-expert sempre; security-reviewer, performance-concurrency-analyst ou data-modeler conforme a categoria do problema) — siga-o. Em seguida execute os passos abaixo.
 
 Com a descrição de correção de bug, melhoria técnica ou refatoração fornecida como argumento, faça o seguinte:
 
@@ -17,7 +17,7 @@ Com a descrição de correção de bug, melhoria técnica ou refatoração forne
 3. **OBRIGATÓRIO — Perspectiva tech-expert**: Com base na skill `.claude/skills/tech-expert/SKILL.md`, avalie a descrição fornecida: sugira abordagem técnica, padrões aplicáveis, riscos arquiteturais e conformidade com `memory/constitution.md` e `docs/arquitetura.md`. Use essa avaliação para enriquecer a spec.
 4. Escreva a especificação técnica em SPEC_FILE usando a estrutura do template, incorporando a orientação do tech-expert. Substitua os placeholders por detalhes concretos derivados da descrição (argumentos). Preserve a ordem e os títulos das seções.
    **IDIOMA**: Toda especificação e documentação deve ser escrita em **português (pt-BR)**.
-5. **Checkpoint de aprovação**: apresente um resumo da spec técnica (problema, causa raiz ou hipóteses, critérios de aceite, escopo) e **pergunte explicitamente se o usuário aprova** antes de sugerir `/plan`. Se restar `[PRECISA INVESTIGAÇÃO]`, informe as hipóteses do agente debugger (quando despachado) e o que faltou para concluir.
+5. **Checkpoint de aprovação**: apresente um resumo da spec técnica (problema, causa raiz ou hipóteses, critérios de aceite, escopo) e **pergunte explicitamente se o usuário aprova** antes de sugerir `/plan`. Se restar `[PRECISA INVESTIGAÇÃO]`, informe as hipóteses do agente debugger (quando despachado) e o que faltou para concluir; se restar `[PRECISA ESCLARECIMENTO]` de decisão do usuário, sugira `/clarify` antes do `/plan`.
 
 6. **Ao finalizar:** Atualize `IMPLEMENTATION_STATUS.md` e `FEATURE_LIST.md` conforme as regras definidas nos próprios arquivos. Princípio 8 da Constitution.
 

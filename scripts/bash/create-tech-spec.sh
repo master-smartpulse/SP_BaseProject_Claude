@@ -7,6 +7,13 @@ source "$SCRIPT_DIR/common.sh"
 
 parse_create_args "$@"
 
+# --update: reuse the current feature branch/dir; never overwrite an existing spec
+if [ "$UPDATE_MODE" = true ]; then
+    REPO_ROOT=$(get_repo_root)
+    reuse_feature_scaffold "$REPO_ROOT/templates/spec-template-tech.md" "spec-tech.md" "$JSON_MODE"
+    exit 0
+fi
+
 DESCRIPTION="${ARGS[*]-}"
 if [ -z "$DESCRIPTION" ]; then
     echo "Usage: $0 [--json] [--short-name NAME] [--number N] DESCRIPTION" >&2

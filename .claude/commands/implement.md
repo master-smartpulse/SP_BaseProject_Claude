@@ -1,7 +1,7 @@
 ---
 description: Executar o plano de implementação processando e executando todas as tasks definidas no tasks.md
 argument-hint: fase ou IDs de tasks para executar/retomar (opcional)
-allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task
 ---
 
 Leia `.claude/agents/implement.md` e adote a persona definida. O agente é a **fonte única do processo de implementação**: define as skills a carregar (incluindo as condicionais por plataforma, conforme o Tipo de Projeto no plan.md), a ordem das fases, o tratamento de dependências e marcadores [P], o TDD e a marcação [X] no tasks.md — siga-o. Em seguida execute os passos abaixo.
@@ -18,7 +18,7 @@ Escopo (opcional): $ARGUMENTS — se fornecido (ex.: uma fase ou IDs de tasks es
 
 3. Execute a implementação seguindo o processo definido no agente: fases na ordem do tasks.md, dependências respeitadas, TDD (testes antes da implementação correspondente), coordenação por arquivo, [X] ao concluir cada task, progresso e falhas reportados com contexto.
 
-4. Validação de conclusão: confirme que todas as tasks do escopo foram concluídas, que os testes passam e que a implementação corresponde à spec e ao plano técnico; informe o status final com resumo do trabalho.
+4. Validação de conclusão: confirme que todas as tasks do escopo foram concluídas, que os testes passam e que a implementação corresponde à spec e ao plano técnico; informe o status final com resumo do trabalho e **sugira `/review` como próxima etapa** (o DoD só é cumprido com review APROVADO).
 
 5. **Ao finalizar:** Atualize `IMPLEMENTATION_STATUS.md` (coluna Impl % conforme a fórmula definida no próprio arquivo: tasks [X] ÷ total) e `FEATURE_LIST.md`. Princípio 8 da Constitution.
 

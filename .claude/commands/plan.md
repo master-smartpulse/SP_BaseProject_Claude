@@ -35,11 +35,11 @@ Com os detalhes de implementação fornecidos como argumento, faça o seguinte:
      - Fase 1 gera data-model.md, contracts/, quickstart.md
      - Fase 2 apenas descreve a abordagem de geração de tarefas — **não** criar tasks.md (responsabilidade do comando /tasks)
    - Incorpore os detalhes fornecidos pelo usuário nos argumentos no Contexto Técnico: $ARGUMENTS
-   - Atualize o Acompanhamento de Progresso ao concluir cada fase
-   **IDIOMA**: Todos os artefatos gerados (research.md, data-model.md, quickstart.md, plan.md e contracts) devem ser escritos em **português (pt-BR)**.
+   - Atualize o Rastreamento de Progresso ao concluir cada fase
+   **IDIOMA**: Todos os artefatos gerados (research.md, data-model.md, quickstart.md, plan.md e contracts) devem ser escritos em **português (pt-BR)** — exceto, nos contracts, os paths de API e as propriedades JSON, que ficam em **inglês** (constitution, Regra Geral 5; descriptions em pt-BR).
 
 5. Verifique se a execução foi concluída:
-   - Confira se o Acompanhamento de Progresso indica todas as fases concluídas
+   - Confira se o Rastreamento de Progresso indica todas as fases concluídas
    - Garanta que todos os artefatos obrigatórios foram gerados
    - Confirme que não há estados ERROR na execução
 

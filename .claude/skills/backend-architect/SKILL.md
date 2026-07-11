@@ -47,6 +47,8 @@ Stack oficial: NestJS + Prisma (constitution, Regra Geral 6). Desvios de stack d
 - Refatorar nomes ou estilo
 - Corrigir bugs específicos
 - Orientação conceitual genérica sobre padrões/DDD/boas práticas sem relação com o código deste repo (tech-expert)
+- Modelagem detalhada de dados, índices e migrations (data-modeler)
+- Desenho detalhado de contratos de API — status codes, paginação, idempotência (api-contract-designer)
 
 ## Estilo de saída
 

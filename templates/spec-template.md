@@ -60,14 +60,17 @@ Ao criar esta especificação a partir de um prompt do usuário:
 
 ## Cenários do Usuário e Testes _(obrigatório)_
 
-### História de Usuário Principal
+### Histórias de Usuário
 
-[Descreva a jornada principal do usuário em linguagem simples]
+_Liste cada história em ordem de prioridade — cada uma vira uma **fase própria** no tasks.md (entrega incremental com checkpoint validável)._
+
+- **US1 — [título curto]** (prioridade alta): [jornada do usuário em linguagem simples]
+- **US2 — [título curto]** (prioridade média): [jornada]
 
 ### Cenários de Aceite
 
-1. **Dado** [estado inicial], **Quando** [ação], **Então** [resultado esperado]
-2. **Dado** [estado inicial], **Quando** [ação], **Então** [resultado esperado]
+1. **US1 — Dado** [estado inicial], **Quando** [ação], **Então** [resultado esperado]
+2. **US2 — Dado** [estado inicial], **Quando** [ação], **Então** [resultado esperado]
 
 ### Casos de Borda
 

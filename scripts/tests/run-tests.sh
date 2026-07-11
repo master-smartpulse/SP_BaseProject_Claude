@@ -54,6 +54,10 @@ OUT=$(bash scripts/bash/create-new-feature.sh --json --update 2>/dev/null)
 assert_json_key "$OUT" "UPDATED" "true" "update mode reported"
 assert_eq "conteudo preenchido" "$(cat specs/001-autenticacao-usuarios-acoes/spec.md)" "existing spec preserved"
 
+echo "== 4b. transliteration under C locale (CI portability) =="
+OUT=$(LC_ALL=C LANG=C bash -c 'source scripts/bash/common.sh && transliterate "Ação média"')
+assert_eq "Acao media" "$OUT" "transliterate works without UTF-8 locale in env"
+
 echo "== 5. setup-plan: keys + backup on rerun =="
 OUT=$(bash scripts/bash/setup-plan.sh --json)
 assert_json_key "$OUT" "BRANCH" "001-autenticacao-usuarios-acoes" "setup-plan branch"

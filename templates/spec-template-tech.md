@@ -16,6 +16,8 @@
 4. Para melhorias/refactor: delimitar escopo e impacto em módulos/APIs
 5. Definir critérios de aceite testáveis e verificáveis
 6. Marcar ambiguidades com [PRECISA ESCLARECIMENTO: pergunta]
+   → Decisões do usuário são resolvidas pelo /clarify, que registra as respostas
+     numa seção "## Esclarecimentos" (criada sob demanda) e atualiza a spec
 7. Executar checklist de gate antes de retornar
 8. Retornar: SUCESSO (spec técnica pronta para /plan)
 ```

@@ -20,6 +20,8 @@
 7. Gerar tabela de conformidade por área e cobertura de requisitos
 8. Determinar resultado: APROVADO (zero Crítico + zero Alto + verificação executável verde ou N/A) ou REPROVADO
 9. Salvar em specs/[###-nome-da-feature]/review.md e retornar relatório
+   (a gravação é feita pelo comando /review no contexto principal; mini-reviews
+   por fase despachados pelo implement apenas reportam achados, sem gravar)
 ```
 
 ---

@@ -18,7 +18,7 @@ Foco opcional indicado pelo usuário: $ARGUMENTS
    - Marcadores explícitos `[PRECISA ESCLARECIMENTO: ...]`
    - Áreas frequentemente subespecificadas mesmo sem marcador: tipos de usuário e permissões; retenção/exclusão de dados; metas de performance e escala; tratamento de erros; integrações; segurança/conformidade; estados de UX (vazio, erro, offline)
 
-3. Priorize e formule **no máximo 5 perguntas**, uma de cada vez, na ordem de maior impacto sobre escopo e comportamento:
+3. Se **não houver ambiguidades materiais** (nenhum marcador e nenhuma área subespecificada que mude escopo/comportamento), reporte "spec sem ambiguidades relevantes", sugira `/plan` e encerre — **não invente perguntas para preencher cota**. Caso contrário, priorize e formule **no máximo 5 perguntas**, uma de cada vez, na ordem de maior impacto sobre escopo e comportamento:
    - Cada pergunta deve ser **objetiva e fechada** sempre que possível: ofereça 2 a 4 opções concretas com as implicações de cada uma (a opção recomendada primeiro), ou peça uma resposta curta.
    - Não pergunte o que já está definido na spec, o que é decisão técnica (isso é do /plan) ou o que não muda materialmente o escopo.
    - Se o usuário indicou um foco em $ARGUMENTS, comece por ele.

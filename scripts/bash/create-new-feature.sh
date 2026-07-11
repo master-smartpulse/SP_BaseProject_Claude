@@ -9,30 +9,8 @@ parse_create_args "$@"
 
 # --update: reuse the current feature branch/dir; never overwrite an existing spec
 if [ "$UPDATE_MODE" = true ]; then
-    eval "$(get_feature_paths)"
-    if [[ ! "$CURRENT_BRANCH" =~ ^[0-9]{3}- ]]; then
-        echo "ERROR: --update requires a feature branch (or SPECIFY_FEATURE set). Current branch: $CURRENT_BRANCH" >&2
-        exit 1
-    fi
-    mkdir -p "$FEATURE_DIR"
-    SPEC_FILE="$FEATURE_DIR/spec.md"
-    if [ ! -f "$SPEC_FILE" ]; then
-        if [ -f "$REPO_ROOT/templates/spec-template.md" ]; then
-            cp "$REPO_ROOT/templates/spec-template.md" "$SPEC_FILE"
-        else
-            touch "$SPEC_FILE"
-        fi
-    fi
-    FEATURE_NUM="${CURRENT_BRANCH:0:3}"
-    if $JSON_MODE; then
-        printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s","UPDATED":"true"}\n' \
-            "$(json_escape "$CURRENT_BRANCH")" "$(json_escape "$SPEC_FILE")" "$(json_escape "$FEATURE_NUM")"
-    else
-        echo "BRANCH_NAME: $CURRENT_BRANCH"
-        echo "SPEC_FILE: $SPEC_FILE"
-        echo "FEATURE_NUM: $FEATURE_NUM"
-        echo "UPDATED: true"
-    fi
+    REPO_ROOT=$(get_repo_root)
+    reuse_feature_scaffold "$REPO_ROOT/templates/spec-template.md" "spec.md" "$JSON_MODE"
     exit 0
 fi
 

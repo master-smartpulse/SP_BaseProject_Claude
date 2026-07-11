@@ -23,8 +23,9 @@ Preferências opcionais do usuário (labels, milestone): $ARGUMENTS
 5. Crie uma issue por task pendente com `gh issue create`:
    - **Título**: `[T00X] Descrição curta` (em pt-BR, como no tasks.md)
    - **Corpo**: fase, requisito(s) (RF-xxx), caminhos de arquivo, casos de teste da task, dependências ("Bloqueada por: T00Y — #<número da issue correspondente>" quando a issue do bloqueio já tiver sido criada) e link para `specs/{feature}/tasks.md`
-   - **Labels**: `spec:{###-nome-da-feature}` + fase (`setup`/`fundacao`/`us1`.../`polish`) + as fornecidas em $ARGUMENTS (crie labels inexistentes com `gh label create` se o usuário aprovou)
+   - **Labels**: `spec:{###-nome-da-feature}` + fase (`setup`/`fundacao`/`us1`.../`polish`/`correcoes`) + as fornecidas em $ARGUMENTS (crie labels inexistentes com `gh label create` se o usuário aprovou)
    - Crie na ordem das dependências (bloqueadoras primeiro) para poder referenciar `#número` nas dependentes.
+   - **Falha parcial**: se a criação de uma issue falhar, PARE, reporte as já criadas (com números) e as pendentes, e só continue com nova aprovação — nunca deixe o estado ambíguo.
 
 6. Ao final, reporte: tabela task → issue (#número, URL), tasks puladas ([X]) e o comando para acompanhar (`gh issue list --label "spec:{feature}"`).
 

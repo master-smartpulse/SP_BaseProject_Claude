@@ -3,6 +3,35 @@
 Registro de mudanças do template-base (versionamento semântico; tag `v{VERSION}` a cada release).
 Projetos derivados: use `scripts/bash/update-from-base.sh` para sincronizar os arquivos do kit e leia as entradas abaixo para follow-ups manuais (emendas de constitution, novos comandos).
 
+## 1.0.1 — 2026-07-11
+
+Correções da segunda auditoria (35 achados verificados sobre a v1.0.0).
+
+### Bugs e regressões
+- Mini-review do implement citava fases antigas (Testes/Núcleo/Integração) — agora Fundação e cada User Story
+- Transliteração de branch robusta a ambientes sem locale UTF-8 (CI Linux): `utf8_locale()` força C.UTF-8/en_US.UTF-8 quando disponível (+ teste dedicado)
+- ci.yml: flags `--if-present` do pnpm na posição correta; typecheck com fallback explícito para `npx tsc --noEmit`
+- allowed-tools: `Task` adicionado a /implement e /specify-tech (despacho de subagents estava bloqueado); `Glob` no /constitution; `Bash` removido do ux-design-reviewer
+
+### Consistência
+- Description do agente review agora permite o despacho como mini-review pelo implement (com prompt do subagent especificado: só reporta, não grava)
+- --update implementado também no create-tech-spec.sh (helper `reuse_feature_scaffold` compartilhado)
+- Rastreabilidade estendida a specs técnicas: CA-xxx aceito na mecânica de cobertura do tasks-template e no gate do agente tasks (que agora exige task de teste por requisito + tabela)
+- spec-template com múltiplas user stories (US1, US2… — uma fase por história); spec-template-tech documenta /clarify
+- /specify e /specify-tech e /tasks delegam a lista de skills ao agente (fim da dupla fonte); ux-design-reviewer condicional a UI
+- /review passo 8 reestruturado (ramos REPROVADO/APROVADO); template anota que mini-reviews não gravam
+- /plan: "Rastreamento de Progresso" (nome real da seção) e exceção de inglês para paths/JSON dos contracts
+- Checklist de [P] do tasks-template esclarece que ordenação entre fases não conta como bloqueio; checkpoints apontam para o cenário da história
+- IMPLEMENTATION_STATUS: coluna "Feature" (antes duplicava "Spec"); README lista VERSION entre os arquivos sincronizados
+- mobile-engineer inclui validação de parâmetros de deep link (fecha a referência da fonte única citada pelo security-reviewer)
+
+### Melhorias nos agentes
+- implement: dono do commit definido (subagents [P] não commitam), limite de 2 tentativas no mini-review, despacho do debugger em falhas sem causa clara, sugere /review ao concluir
+- specify-tech: skills condicionais por categoria (security-reviewer, performance-concurrency-analyst, data-modeler); checkpoint sugere /clarify
+- review: carrega api-contract-designer/data-modeler quando o diff toca contratos/schema; enumeração do relatório inclui Cobertura de Requisitos
+- /clarify: caminho explícito para "zero ambiguidades" (não inventa perguntas); /taskstoissues: label `correcoes` + protocolo de falha parcial
+- backend-architect declara fronteiras com data-modeler/api-contract-designer; tech-expert com allowed-tools; api-contract-designer valida OpenAPI via redocly quando disponível
+
 ## 1.0.0 — 2026-07-11
 
 Primeira versão versionada, consolidando a auditoria multi-agente e as 4 fases do roadmap de melhorias.

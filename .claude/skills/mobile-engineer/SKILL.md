@@ -21,7 +21,7 @@ Implemente features do app mobile em React Native + Expo com TypeScript, seguind
 - [ ] Telas não chamam a API diretamente — sempre via repository hooks (TanStack Query)
 - [ ] Tokens e credenciais **somente** em `expo-secure-store` — nunca em AsyncStorage ou estado persistido
 - [ ] Toda tela com dados remotos trata loading, erro de rede e vazio; cache do TanStack Query para degradação offline
-- [ ] Rotas tipadas; deep linking configurado para telas acessíveis externamente
+- [ ] Rotas tipadas; deep linking configurado para telas acessíveis externamente, com **parâmetros de deep link validados** (nunca confiar em dados vindos do link)
 - [ ] Permissões (câmera, localização, notificações) pedidas em contexto de uso, com fluxo de negação tratado
 - [ ] Ciclo de vida tratado via `AppState` quando houver sessão com expiração ou dados sensíveis em tela
 - [ ] Listas longas com FlashList/FlatList otimizada (`keyExtractor`, `estimatedItemSize`)

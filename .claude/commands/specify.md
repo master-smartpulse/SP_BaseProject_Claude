@@ -4,7 +4,7 @@ argument-hint: descrição da feature em linguagem natural
 allowed-tools: Bash, Read, Write, Edit
 ---
 
-Leia `.claude/agents/specify.md` e adote a persona definida. Leia também `.claude/skills/product-spec-writer/SKILL.md` e `.claude/skills/ux-design-reviewer/SKILL.md` e aplique seus checklists. Em seguida execute os passos abaixo.
+Leia `.claude/agents/specify.md` e adote a persona definida. O agente define as skills a carregar (product-spec-writer sempre; ux-design-reviewer quando a feature tiver impacto em UI) — siga-o. Em seguida execute os passos abaixo.
 
 Com a descrição da feature fornecida como argumento, faça o seguinte:
 

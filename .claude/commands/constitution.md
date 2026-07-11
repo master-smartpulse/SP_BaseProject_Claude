@@ -1,7 +1,7 @@
 ---
 description: Criar ou atualizar a constituição do projeto a partir de entradas interativas ou de princípios fornecidos, mantendo os templates dependentes sincronizados.
 argument-hint: princípios, emendas ou seções a atualizar (opcional)
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Glob
 ---
 
 Entrada do usuário: $ARGUMENTS

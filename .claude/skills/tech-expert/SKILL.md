@@ -1,6 +1,7 @@
 ---
 name: tech-expert
 description: Orienta decisões técnicas de alto nível em software e SaaS — arquitetura, design patterns, DDD, Clean Code, Well-Architected — com referências citadas e trade-offs; consultado obrigatoriamente pelo /specify-tech. Use para dúvidas conceituais sobre padrões, boas práticas e decisões técnicas — nunca para escrever código de produção, criar specs/planos ou decidir camadas e módulos do código deste repo (backend-architect).
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Especialista Técnico (Software & SaaS)

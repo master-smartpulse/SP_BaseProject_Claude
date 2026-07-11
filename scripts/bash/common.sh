@@ -274,20 +274,66 @@ create_feature_scaffold() {
     fi
 }
 
+# Resolves a UTF-8 locale for multibyte-aware sed/iconv: keeps the current one
+# when already UTF-8, otherwise picks C.UTF-8/en_US.UTF-8 when available.
+utf8_locale() {
+    case "${LC_ALL:-${LANG:-}}" in
+        *[Uu][Tt][Ff]*) printf '%s' "${LC_ALL:-$LANG}"; return ;;
+    esac
+    locale -a 2>/dev/null | grep -im1 '^C\.UTF' || locale -a 2>/dev/null | grep -im1 '^en_US\.UTF' || printf 'C'
+}
+
 # Converts accented characters to ASCII (e.g. "autenticação" -> "autenticacao").
-# Primary path: sed table covering pt-BR diacritics (deterministic, locale-aware).
+# Primary path: sed table covering pt-BR diacritics (multibyte y/// requires a
+# UTF-8 locale — forced via utf8_locale so C-locale CI runners still work).
 # Fallback: iconv //TRANSLIT for anything else (exit code ignored — macOS iconv
 # exits non-zero on inexact conversions while still producing output), then strips
 # transliteration artifacts some iconv implementations emit (~ ^ ` ' " , ?).
 transliterate() {
     local input="$1"
+    local loc
+    loc=$(utf8_locale)
     local result
-    result=$(printf '%s' "$input" | sed 'y/áàâãäéèêëíìîïóòôõöúùûüçñÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇÑ/aaaaaeeeeiiiiooooouuuucnAAAAAEEEEIIIIOOOOOUUUUCN/' 2>/dev/null) || result=""
+    result=$(printf '%s' "$input" | LC_ALL="$loc" sed 'y/áàâãäéèêëíìîïóòôõöúùûüçñÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇÑ/aaaaaeeeeiiiiooooouuuucnAAAAAEEEEIIIIOOOOOUUUUCN/' 2>/dev/null) || result=""
     [ -n "$result" ] || result="$input"
     local converted
-    converted=$(printf '%s' "$result" | iconv -f UTF-8 -t ASCII//TRANSLIT 2>/dev/null || true)
+    converted=$(printf '%s' "$result" | LC_ALL="$loc" iconv -f UTF-8 -t ASCII//TRANSLIT 2>/dev/null || true)
     [ -n "$converted" ] || converted="$result"
     printf '%s' "$converted" | sed "s/[~^\`'\",?]//g"
+}
+
+# Reuses the current feature branch/dir instead of creating a new one (--update).
+# Creates the spec from the template only when missing; never overwrites.
+# Args: template_path spec_filename json_mode
+reuse_feature_scaffold() {
+    local template="$1"
+    local spec_filename="$2"
+    local json_mode="$3"
+
+    eval "$(get_feature_paths)"
+    if [[ ! "$CURRENT_BRANCH" =~ ^[0-9]{3}- ]]; then
+        echo "ERROR: --update requires a feature branch (or SPECIFY_FEATURE set). Current branch: $CURRENT_BRANCH" >&2
+        exit 1
+    fi
+    mkdir -p "$FEATURE_DIR"
+    local spec_file="$FEATURE_DIR/$spec_filename"
+    if [ ! -f "$spec_file" ]; then
+        if [ -f "$template" ]; then
+            cp "$template" "$spec_file"
+        else
+            touch "$spec_file"
+        fi
+    fi
+    local feature_num="${CURRENT_BRANCH:0:3}"
+    if [ "$json_mode" = true ]; then
+        printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s","UPDATED":"true"}\n' \
+            "$(json_escape "$CURRENT_BRANCH")" "$(json_escape "$spec_file")" "$(json_escape "$feature_num")"
+    else
+        echo "BRANCH_NAME: $CURRENT_BRANCH"
+        echo "SPEC_FILE: $spec_file"
+        echo "FEATURE_NUM: $feature_num"
+        echo "UPDATED: true"
+    fi
 }
 
 clean_branch_name() {

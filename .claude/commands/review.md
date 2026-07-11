@@ -29,10 +29,9 @@ Escopo adicional (opcional): $ARGUMENTS — arquivos ou diretórios a incluir al
 
 7. Gere o **relatório de revisão** na estrutura do template: achados com severidade, arquivo, regra violada e correção sugerida; tabela de conformidade por área; resultado final conforme o critério do template. **Salve o relatório em `FEATURE_DIR/review.md`** (artefato sancionado do fluxo — constitution, Regra Geral 2; sobrescreva se existir, o relatório reflete o estado atual do branch).
 
-8. **Loop de correção** — se REPROVADO:
-   - Converta cada achado Crítico/Alto em task corretiva e apense ao `tasks.md` numa fase **"Correções"** (IDs continuando a sequência; cada task cita o achado, ex.: "T024 Corrigir CRÍTICO-001: ..."). Esta é a única escrita permitida além do relatório e dos arquivos de status.
-   - Sugira o ciclo: `/implement Correções` → novo `/review`.
-   - Se APROVADO: informe que a feature cumpriu o DoD de revisão e **sugira fechar o ciclo git** — abrir o PR com `gh pr create --fill` (se o repo tiver remote GitHub e o usuário aprovar) ou merge conforme o fluxo do time. Não abra o PR sem aprovação explícita (ação externa).
+8. **Resultado e próximo passo**:
+   - **Se REPROVADO**: converta cada achado Crítico/Alto em task corretiva e apense ao `tasks.md` numa fase **"Correções"** (IDs continuando a sequência; cada task cita o achado, ex.: "T024 Corrigir CRÍTICO-001: ..."). Esta é a única escrita permitida além do relatório e dos arquivos de status. Sugira o ciclo: `/implement Correções` → novo `/review`.
+   - **Se APROVADO**: informe que a feature cumpriu o DoD de revisão e **sugira fechar o ciclo git** — abrir o PR com `gh pr create --fill` (se o repo tiver remote GitHub e o usuário aprovar) ou merge conforme o fluxo do time. Não abra o PR sem aprovação explícita (ação externa).
 
 9. **Ao finalizar:** Atualize `IMPLEMENTATION_STATUS.md` (coluna Review e DoD, conforme a fórmula definida no próprio arquivo) e `FEATURE_LIST.md` — a escrita é responsabilidade **deste comando, no contexto principal** (o agente review é read-only e não escreve arquivos). Princípio 8 da Constitution.
 

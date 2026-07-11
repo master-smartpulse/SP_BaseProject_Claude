@@ -4,7 +4,7 @@ argument-hint: contexto adicional para a geração de tasks (opcional)
 allowed-tools: Bash, Read, Write, Edit, Glob
 ---
 
-Leia `.claude/agents/tasks.md` e adote a persona definida. Leia também `.claude/skills/test-designer/SKILL.md` e aplique seu checklist (cenário feliz, erro, mocks, edge cases nas tarefas de teste). Em seguida execute os passos abaixo.
+Leia `.claude/agents/tasks.md` e adote a persona definida. O agente define as skills a carregar (test-designer, para os casos de teste das tarefas) — siga-o. Em seguida execute os passos abaixo.
 
 Com o contexto fornecido como argumento, faça o seguinte:
 

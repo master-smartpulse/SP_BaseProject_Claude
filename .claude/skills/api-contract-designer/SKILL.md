@@ -27,7 +27,7 @@ Antes de considerar contracts/ completo, verifique:
 - [ ] **Idempotência explícita**: PUT/DELETE idempotentes; POST de operação crítica (pagamento, envio) com estratégia declarada (Idempotency-Key ou constraint natural)
 - [ ] **Segurança declarada**: `securitySchemes` (bearer JWT) aplicado; endpoints públicos marcados explicitamente como exceção
 - [ ] **Convenções de idioma**: paths e propriedades JSON em inglês (Regra Geral 5); descriptions em pt-BR
-- [ ] **OpenAPI 3.1 válido** (baseado em `templates/openapi-template.yaml`; um arquivo por recurso)
+- [ ] **OpenAPI 3.1 válido** (baseado em `templates/openapi-template.yaml`; um arquivo por recurso; quando npx estiver disponível, valide com `npx @redocly/cli lint <arquivo>` e cite o resultado)
 - [ ] **Casos de teste de contrato especificados** por endpoint (schema de request/response + códigos de erro), prontos para virar tasks
 
 ## Áreas de foco

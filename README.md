@@ -149,7 +149,7 @@ specs/{###-nome-da-feature}/
 ## Versionamento do kit e updates
 
 - O kit segue versionamento semântico: arquivo `VERSION` + entradas no `CHANGELOG.md` + tag `v{VERSION}` no repositório do template.
-- Projetos derivados sincronizam os arquivos **do kit** (`.claude/`, `templates/`, `scripts/`, `AGENTS.md`) com:
+- Projetos derivados sincronizam os arquivos **do kit** (`.claude/`, `templates/`, `scripts/`, `AGENTS.md`, `VERSION`) com:
   ```bash
   bash scripts/bash/update-from-base.sh --source <path-ou-git-url-do-template> [--ref v1.0.0] [--dry-run]
   ```

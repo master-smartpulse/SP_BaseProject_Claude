@@ -1,7 +1,7 @@
 ---
 name: ux-design-reviewer
 description: Revisa e sugere expectativas de UX/UI para features — fluxos, acessibilidade, consistência com design system, clareza de feedback e estados extremos. Use ao especificar ou planejar features com UI, revisar telas ou fluxos, ou quando o usuário perguntar sobre UX, acessibilidade ou consistência de design — nunca ao implementar código ou definir arquitetura de backend.
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob
 ---
 
 # Revisor de UX/Design

@@ -33,7 +33,7 @@
 ## Formato: `[ID] [P?] (RF-xxx) Descrição`
 
 - **[P]**: Pode rodar em paralelo (arquivos diferentes, sem dependências)
-- **(RF-xxx)**: requisito(s) da spec que a task atende — obrigatório nas tasks de teste e de implementação derivadas de requisitos; tasks de infraestrutura usam (SETUP) ou omitem
+- **(RF-xxx)**: requisito(s) da spec que a task atende — obrigatório nas tasks de teste e de implementação derivadas de requisitos; tasks de infraestrutura usam (SETUP) ou omitem. Em features vindas do `/specify-tech`, use os critérios de aceite **(CA-xxx)** no lugar de RF-xxx (mesma mecânica de cobertura; specs técnicas geralmente têm uma única "fase de correção" no lugar das user stories)
 - Incluir caminhos exatos de arquivo nas descrições
 
 ## Convenções de Caminho
@@ -67,14 +67,14 @@ _TDD dentro do bloco: os testes da história DEVEM ser escritos e DEVEM FALHAR a
 - [ ] T009 (RF-001) CreateUserUseCase em src/modules/users/use-cases/create-user/ (depende de T004 — sem [P])
 - [ ] T010 (RF-001) UserService e endpoint POST /api/users em src/modules/users/
 
-**Checkpoint US1 (validável)**: testes da história verdes; cenário 1 do quickstart.md executável de ponta a ponta.
+**Checkpoint US1 (validável)**: testes da história verdes; cenário correspondente à história no quickstart.md executável de ponta a ponta.
 
 ## Fase 4.4: US2 — Consulta de usuário (RF-002) 🎯
 
 - [ ] T011 [P] (RF-002) Teste de contrato GET /api/users/{id} em tests/contract/users-get.spec.ts
 - [ ] T012 (RF-002) Endpoint GET /api/users/{id} em src/modules/users/controllers/
 
-**Checkpoint US2 (validável)**: testes da história verdes; cenário 2 do quickstart.md executável.
+**Checkpoint US2 (validável)**: testes da história verdes; cenário correspondente à história no quickstart.md executável.
 
 ## Fase 4.5: Polish (transversal)
 
@@ -150,5 +150,5 @@ _PORTÃO: Verificado antes de retornar_
 - [ ] Tarefas paralelas realmente independentes
 - [ ] Cada tarefa especifica caminho exato do arquivo
 - [ ] Nenhuma tarefa modifica o mesmo arquivo que outra tarefa [P]
-- [ ] Nenhuma tarefa marcada [P] aparece como bloqueada na seção Dependências
+- [ ] Nenhuma tarefa marcada [P] aparece como bloqueada por outra task **da mesma fase** na seção Dependências (ordenação entre fases — ex.: Fundação antes das histórias — não conta como bloqueio de [P])
 - [ ] Tabela de Cobertura de Requisitos preenchida; nenhum RF sem task de implementação e de teste
