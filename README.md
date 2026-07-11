@@ -38,6 +38,9 @@ Esta pasta contém um **kit de setup** para usar o **Claude Code** com fluxo de 
    - `docs/` → raiz do repo (merge com `docs/` existente se houver)
    - `memory/` → raiz do repo (merge com `memory/` existente se houver)
    - `FEATURE_LIST.md` e `IMPLEMENTATION_STATUS.md` → raiz do repo
+   - `.github/` → raiz do repo (merge com workflows existentes se houver)
+   - `VERSION` e `CHANGELOG.md` → raiz do repo (base do fluxo de update)
+   - `LICENSE` → raiz do repo (substitua pela licença do seu projeto se for fechado)
 
 2. **Inicialize o git** se o repositório ainda não for git (`git init`): os comandos criam um branch por feature. Sem git, os scripts funcionam em modo degradado (sem branches e sem lista de arquivos alterados no `/review`).
 
@@ -48,18 +51,18 @@ Esta pasta contém um **kit de setup** para usar o **Claude Code** com fluxo de 
 
    **Limitação em times**: a numeração de features só enxerga branches publicadas. Sem `SPECIFY_PUSH=1` (+ `SPECIFY_FETCH=1` nos demais devs), dois devs podem gerar o mesmo número simultaneamente — resolva renomeando uma das branches/diretórios antes do merge.
 
-   Hooks do Claude Code (`.claude/settings.json` + `scripts/bash/hooks/`): bloqueiam `git commit`/`git push` direto na `main` (crie uma branch de feature) e formatam arquivos editados com Prettier quando o projeto o tiver configurado. A leitura de arquivos `.env` reais é negada por permissão (`.env.example` continua acessível). Remova ou ajuste em `.claude/settings.json` se não quiser esses comportamentos.
+   Hooks do Claude Code (`.claude/settings.json` + `scripts/bash/hooks/`): bloqueiam `git commit`/`git push` direto na `main` (crie uma branch de feature) e formatam arquivos editados com Prettier quando o projeto o tiver configurado. A leitura de arquivos `.env` de ambientes reais é negada por permissão (lista exata em `settings.json`: `.env`, `.env.local`, `.env.development`, `.env.test`, `.env.staging`, `.env.production`, `.env.*.local`; `.env.example` continua acessível). Remova ou ajuste em `.claude/settings.json` se não quiser esses comportamentos.
 
-3. **Dia-1 — bootstrap e adaptação** (nesta ordem):
+3. **Instale o Claude Code** se ainda não tiver (necessário para o dia-1 abaixo):
+   ```bash
+   npm install -g @anthropic-ai/claude-code
+   ```
+
+4. **Dia-1 — bootstrap e adaptação** (nesta ordem):
    1. Rode `bash scripts/bash/init-project.sh` — verifica a integridade da cópia, inicializa o git se faltar, limpa `specs/` e remove arquivos que só pertencem ao repo do template
    2. Numa sessão Claude Code, rode **`/constitution`** — preencha a Visão Geral do Produto, "Ratificada em" e ajuste princípios (o comando propaga as mudanças aos templates e docs dependentes)
    3. Ajuste `docs/arquitetura.md` com o nome do produto, stack e convenções do seu time (remova as seções de aplicações que o projeto não tiver — ex.: Mobile num projeto só web)
    4. Rode `/specify "descrição da primeira feature"` e siga o workflow
-
-4. **Instale o Claude Code** se ainda não tiver:
-   ```bash
-   npm install -g @anthropic-ai/claude-code
-   ```
 
 5. **Use os comandos slash** dentro de uma sessão Claude Code:
    - `/specify "descrição da feature"` — Cria spec de produto
@@ -153,7 +156,7 @@ specs/{###-nome-da-feature}/
   ```bash
   bash scripts/bash/update-from-base.sh --source <path-ou-git-url-do-template> [--ref v1.0.0] [--dry-run]
   ```
-  Arquivos do **projeto** (CLAUDE.md, constitution, docs, specs, FEATURE_LIST, IMPLEMENTATION_STATUS) nunca são tocados — leia o CHANGELOG do template para follow-ups manuais (ex.: emendas de constitution).
+  Arquivos do **projeto** (CLAUDE.md, constitution, docs, specs, FEATURE_LIST, IMPLEMENTATION_STATUS) nunca são tocados **por padrão** — `--include-claude-md` é o opt-in explícito para sincronizar também o CLAUDE.md (projetos costumam customizá-lo). Atenção: arquivos extras que você criar dentro das pastas do kit são removidos pelo sync (`.claude/settings.local.*` é sempre preservado); use `--dry-run` para pré-visualizar. Leia o CHANGELOG do template para follow-ups manuais (ex.: emendas de constitution).
 
 ## MCP
 

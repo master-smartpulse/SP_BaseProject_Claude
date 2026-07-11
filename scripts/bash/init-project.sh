@@ -24,8 +24,17 @@ done
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-REPO_ROOT=$(get_repo_root)
+# Anchor on the script location, NOT on git: bootstrap runs before .git exists,
+# and a git-based root would resolve to an enclosing repo when the kit is nested.
+REPO_ROOT="$(CDPATH="" cd "$SCRIPT_DIR/../.." && pwd)"
 cd "$REPO_ROOT"
+
+GIT_TOPLEVEL=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [ -n "$GIT_TOPLEVEL" ] && [ "$GIT_TOPLEVEL" != "$REPO_ROOT" ]; then
+    echo "WARNING: kit root ($REPO_ROOT) is nested inside another git repo ($GIT_TOPLEVEL)." >&2
+    echo "Feature branches will be created in the enclosing repo. If that is not intended," >&2
+    echo "move the kit to its own directory and run 'git init' there first." >&2
+fi
 
 run() {
     if $DRY_RUN; then
@@ -50,8 +59,10 @@ fi
 echo "  OK: all required kit paths present"
 
 echo "== Git =="
-if has_git; then
-    echo "  OK: git repository detected"
+if [ -d "$REPO_ROOT/.git" ]; then
+    echo "  OK: git repository detected at kit root"
+elif [ -n "$GIT_TOPLEVEL" ]; then
+    echo "  Using enclosing git repository: $GIT_TOPLEVEL (see warning above)"
 else
     run git init
     echo "  Initialized git repository (feature branches require it)"
@@ -79,9 +90,9 @@ done
 
 echo ""
 echo "== Day-1 checklist (do these next, inside a Claude Code session) =="
-echo "  1. /constitution — preencha a Visão Geral do Produto, 'Ratificada em' e ajuste princípios"
-echo "  2. Ajuste docs/arquitetura.md (nome do produto; remova seções de plataformas que o projeto não tem)"
-echo "  3. Revise .claude/settings.json (hooks de main-protect e format; permissões de .env)"
-echo "  4. /specify \"descrição da primeira feature\""
+echo "  1. /constitution — fill in the Product Overview, 'Ratificada em' and adjust principles"
+echo "  2. Adjust docs/arquitetura.md (product name; remove sections for platforms the project lacks)"
+echo "  3. Review .claude/settings.json (main-protect and format hooks; .env permissions)"
+echo "  4. /specify \"<first feature description>\""
 echo ""
 echo "Done. Kit version: $(cat VERSION 2>/dev/null || echo 'unknown')"

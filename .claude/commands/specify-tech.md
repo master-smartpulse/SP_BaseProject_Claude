@@ -13,6 +13,8 @@ Com a descrição de correção de bug, melhoria técnica ou refatoração forne
    bash scripts/bash/create-tech-spec.sh --json "$ARGUMENTS"
    ```
    **IMPORTANTE** Execute o script apenas uma vez. O JSON é exibido no terminal — use-o para obter o conteúdo real.
+   - **Criar**: o script cria a branch nova (sufixo `-tech`) a partir da `main` e o diretório da feature.
+   - **Atualizar**: se o pedido for atualizar a spec técnica da feature **atual** (já em branch de feature), rode com `--update` — reutiliza o diretório sem criar branch nem sobrescrever a spec preenchida; você então edita o SPEC_FILE existente.
 2. Carregue `templates/spec-template-tech.md` para entender as seções obrigatórias.
 3. **OBRIGATÓRIO — Perspectiva tech-expert**: Com base na skill `.claude/skills/tech-expert/SKILL.md`, avalie a descrição fornecida: sugira abordagem técnica, padrões aplicáveis, riscos arquiteturais e conformidade com `memory/constitution.md` e `docs/arquitetura.md`. Use essa avaliação para enriquecer a spec.
 4. Escreva a especificação técnica em SPEC_FILE usando a estrutura do template, incorporando a orientação do tech-expert. Substitua os placeholders por detalhes concretos derivados da descrição (argumentos). Preserve a ordem e os títulos das seções.

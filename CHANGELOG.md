@@ -3,6 +3,28 @@
 Registro de mudanças do template-base (versionamento semântico; tag `v{VERSION}` a cada release).
 Projetos derivados: use `scripts/bash/update-from-base.sh` para sincronizar os arquivos do kit e leia as entradas abaixo para follow-ups manuais (emendas de constitution, novos comandos).
 
+## 1.0.2 — 2026-07-11
+
+Correções da re-auditoria das dimensões pendentes (28 achados verificados, vários reproduzidos em sandbox).
+
+### Bugs
+- init-project.sh ancorava a raiz via git e operava no repo errado quando o kit estava aninhado — agora ancora no próprio script, com aviso de repo externo
+- update-from-base.sh apagava `.claude/settings.local.*` e customizações locais via `rsync --delete` — agora preserva settings.local.*, documenta o efeito, tem trap de cleanup e avisa quando `--ref` é ignorado com source local
+- pre-bash-guard: fecha o bypass `git -C/-c ... commit|push` e elimina falsos positivos de substring (regex ancorada em posição de comando)
+- ci.yml: instala sem `--frozen-lockfile` quando não há pnpm-lock.yaml (com warning); corepack respeita `packageManager`; fallback de typecheck não baixa TS da rede; shellcheck instalado de fato (sem skip silencioso)
+- Hooks referenciados via `$CLAUDE_PROJECT_DIR` (funcionam com qualquer cwd); post-edit-format resolve package.json pela raiz do projeto
+- run-tests.sh: isola git config global/system do runner; sumário sempre impresso via trap; bits de execução dos 6 scripts novos corrigidos (755)
+
+### Consistência
+- Constitution v1.5.1: barrels/validação/checklist condicionam use-cases/ à Dispensa; item de CI no Checklist de Conformidade; gatilho de atualização classifica /taskstoissues e /constitution (listas alinhadas nos 3 documentos)
+- README: passo de cópia inclui .github/, VERSION, CHANGELOG e LICENSE; instalação do Claude Code antes do dia-1; deny list de .env exata (+ .env.test); update "por padrão" + --include-claude-md documentado
+- /specify-tech documenta o modo --update; plan-template exemplifica Node 22/TS 5.5+; openapi-template com ErrorResponse nos 401; cabeçalho do update-from-base lista VERSION
+- docs/arquitetura.md: sem hipótese de "nomes em português no domínio"; exemplo EmailModule com premissa de ConfigModule global; rodapé atualizado
+- init-project.sh com saída uniformizada em inglês
+
+### Testes
+- Novos: transliteração em locale C, branch de feature nasce da main (merge-base), SPECIFY_PUSH sem origin, smoke de init-project e update-from-base em --dry-run
+
 ## 1.0.1 — 2026-07-11
 
 Correções da segunda auditoria (35 achados verificados sobre a v1.0.0).

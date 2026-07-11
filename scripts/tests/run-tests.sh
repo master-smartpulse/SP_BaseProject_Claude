@@ -5,11 +5,23 @@
 
 set -euo pipefail
 
+# Isolate from the runner's global/system git config (gpgsign, hooksPath, templates)
+export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null
+
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(CDPATH="" cd "$SCRIPT_DIR/../.." && pwd)"
 
 PASS=0
 FAIL=0
+SANDBOX=""
+
+# Always print the summary and clean up, even if set -e aborts mid-suite
+finish() {
+    [ -n "$SANDBOX" ] && rm -rf "$SANDBOX"
+    echo ""
+    echo "Results: $PASS passed, $FAIL failed"
+}
+trap finish EXIT
 
 ok()   { PASS=$((PASS + 1)); echo "  ok: $1"; }
 fail() { FAIL=$((FAIL + 1)); echo "  FAIL: $1" >&2; }
@@ -32,7 +44,6 @@ done
 echo "== 2. Sandbox setup =="
 # pwd -P resolves symlinks (macOS mktemp returns /var/... -> /private/var/...)
 SANDBOX=$(cd "$(mktemp -d)" && pwd -P)
-trap 'rm -rf "$SANDBOX"' EXIT
 cp -R "$KIT_ROOT/scripts" "$SANDBOX/"
 cp -R "$KIT_ROOT/templates" "$SANDBOX/"
 cd "$SANDBOX"
@@ -81,12 +92,33 @@ echo "== 8. check-spec-prerequisites =="
 OUT=$(bash scripts/bash/check-spec-prerequisites.sh --json)
 assert_json_key "$OUT" "FEATURE_SPEC" "$SANDBOX/specs/001-autenticacao-usuarios-acoes/spec.md" "check-spec FEATURE_SPEC"
 
-echo "== 9. create-tech-spec: -tech suffix, branch from main =="
+echo "== 9. create-tech-spec: -tech suffix =="
 git checkout -q main
 OUT=$(bash scripts/bash/create-tech-spec.sh --json "Correção de sessão expirada" 2>/dev/null)
 BRANCH=$(printf '%s' "$OUT" | python3 -c "import json,sys; print(json.load(sys.stdin)['BRANCH_NAME'])")
 case "$BRANCH" in *-tech) ok "tech suffix ($BRANCH)" ;; *) fail "missing -tech suffix ($BRANCH)" ;; esac
 [ -f "specs/$BRANCH/spec-tech.md" ] && ok "spec-tech.md created" || fail "spec-tech.md missing"
+
+echo "== 9b. new feature branches from main, not from current branch =="
+# add a distinguishing commit on the tech branch, then create a feature from there
+git checkout -q "$BRANCH"
+echo marker > marker.txt
+git add marker.txt
+git -c user.email=test@test -c user.name=test commit -qm marker
+OUT=$(bash scripts/bash/create-new-feature.sh --json "Relatórios gerenciais" 2>/dev/null)
+NB=$(printf '%s' "$OUT" | python3 -c "import json,sys; print(json.load(sys.stdin)['BRANCH_NAME'])")
+if git merge-base --is-ancestor "$BRANCH" "$NB" 2>/dev/null; then
+    fail "feature branch inherited commits from '$BRANCH' (should start from main)"
+else
+    ok "feature branch based on main ($NB)"
+fi
+
+echo "== 9c. SPECIFY_PUSH=1 without origin: warns but exits 0 =="
+if OUT=$(SPECIFY_PUSH=1 bash scripts/bash/create-new-feature.sh --json "Exportar dados" 2>/dev/null); then
+    ok "SPECIFY_PUSH without a remote does not fail"
+else
+    fail "SPECIFY_PUSH without a remote should exit 0"
+fi
 
 echo "== 10. hooks: block on main, allow on feature branch =="
 git checkout -q main
@@ -116,6 +148,22 @@ else
     ok "create-new-feature fails without description"
 fi
 
-echo ""
-echo "Results: $PASS passed, $FAIL failed"
+echo "== 12. init-project.sh --dry-run (kit root, no mutations) =="
+if (cd "$KIT_ROOT" && bash scripts/bash/init-project.sh --dry-run >/dev/null 2>&1); then
+    ok "init-project --dry-run exits 0"
+else
+    fail "init-project --dry-run should exit 0"
+fi
+
+echo "== 13. update-from-base.sh --dry-run against kit root =="
+UPD=$(mktemp -d)
+mkdir -p "$UPD/scripts"
+cp -R "$KIT_ROOT/scripts/bash" "$UPD/scripts/"
+if (cd "$UPD" && bash scripts/bash/update-from-base.sh --source "$KIT_ROOT" --dry-run >/dev/null 2>&1); then
+    ok "update-from-base --dry-run exits 0"
+else
+    fail "update-from-base --dry-run should exit 0"
+fi
+rm -rf "$UPD"
+
 [ "$FAIL" -eq 0 ]

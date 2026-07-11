@@ -43,7 +43,7 @@ description: 'Template de plano de implementação para desenvolvimento de featu
 
 ## Contexto Técnico
 
-**Linguagem/Versão**: [ex.: TypeScript 5.x + Node 20, TypeScript 5.x + Expo SDK 52 ou PRECISA ESCLARECIMENTO] 
+**Linguagem/Versão**: [ex.: TypeScript 5.5+ + Node 22 (LTS), TypeScript 5.5+ + Expo SDK 52 ou PRECISA ESCLARECIMENTO] 
 **Dependências Principais**: [ex.: NestJS + Prisma, Next.js + TanStack Query, React Native + Expo Router ou PRECISA ESCLARECIMENTO] 
 **Armazenamento**: [se aplicável, ex.: PostgreSQL via Prisma, expo-secure-store ou N/A] 
 **Testes**: [ex.: Vitest/Jest, Playwright (web E2E), Maestro (mobile E2E) ou PRECISA ESCLARECIMENTO] 

@@ -36,6 +36,10 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Erro interno (sem detalhes internos no corpo)
           content:
@@ -67,6 +71,10 @@ paths:
                 $ref: "#/components/schemas/ResourceListResponse"
         "401":
           description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/[resources]/{id}:
     get:
       summary: "[busca por id — rastreável a um RF-XXX da spec]"
@@ -86,6 +94,10 @@ paths:
                 $ref: "#/components/schemas/ResourceResponse"
         "401":
           description: Não autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Não encontrado
           content:

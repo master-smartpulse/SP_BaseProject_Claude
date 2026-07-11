@@ -40,7 +40,7 @@ Arquivos, pastas, variáveis, funções, classes, DTOs, paths de API, propriedad
 
 Se usar Prisma (ou ORM com schema), siga estas convenções para consistência:
 
-- **Idioma**: Todas as tabelas, colunas, índices e nomes no esquema do banco DEVEM estar em **inglês**. O mapeamento no Prisma usa `@map()` e `@@map()` para garantir nomes em inglês no banco, mesmo quando o código use nomes em português no domínio.
+- **Idioma**: Todas as tabelas, colunas, índices e nomes no esquema do banco DEVEM estar em **inglês** — assim como o código (Regra Geral 5). O mapeamento no Prisma usa `@map()` e `@@map()` para converter o camelCase do código em snake_case no banco.
 - **Migrations**: toda alteração de schema DEVE ter migration correspondente (`prisma migrate dev` em desenvolvimento, `prisma migrate deploy` no deploy). Migrations aditivas e reversíveis; mudanças breaking seguem expand-contract (adicionar → migrar dados → remover). Ver checklist da skill `data-modeler`.
 - **Colunas no banco**: snake_case em inglês. Todo campo camelCase no código deve mapear para snake_case em inglês (ex.: no Prisma use `@map("snake_case")`):
   - `userId` → `@map("user_id")`
@@ -178,6 +178,8 @@ export interface IEmailAdapter {
 }
 
 // shared/email/email.module.ts
+// Premissa: ConfigModule.forRoot({ isGlobal: true }) registrado no AppModule
+// (senão, adicione imports: [ConfigModule] aqui)
 @Module({
   providers: [
     {
@@ -256,7 +258,7 @@ app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: t
 
 ### Variáveis de Ambiente
 
-Manter secrets e configuração em variáveis de ambiente (ex.: `DATABASE_URL`, `JWT_SECRET`, provedores de e-mail/SMS/pagamento, etc.). Não commitar valores reais. No NestJS, acesso via `ConfigModule`/`ConfigService` tipado — sem `process.env` espalhado pelos módulos.
+Manter secrets e configuração em variáveis de ambiente (ex.: `DATABASE_URL`, `JWT_SECRET`, provedores de e-mail/SMS/pagamento, etc.). Não commitar valores reais. No NestJS, acesso via `ConfigModule`/`ConfigService` tipado — registre `ConfigModule.forRoot({ isGlobal: true })` no AppModule e nunca use `process.env` espalhado pelos módulos.
 
 ### Testes
 
@@ -467,4 +469,4 @@ User Action → Screen → Hook (useQuery/useMutation) → Repository Hook → A
 
 ---
 
-**Última atualização**: 2026-06-09 (template-base — substitua pela data do seu projeto ao adotar)
+**Última atualização**: 2026-07-11 (template-base — substitua pela data do seu projeto ao adotar)

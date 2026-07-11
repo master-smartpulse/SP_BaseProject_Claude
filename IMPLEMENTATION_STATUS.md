@@ -9,7 +9,7 @@
 2. `review.md` com resultado **APROVADO** (zero Crítico + zero Alto);
 3. Verificação executável do review verde (typecheck, lint e testes).
 
-**Quando atualizar:** ao finalizar os comandos que mudam estado de feature — `/specify`, `/specify-tech`, `/implement`, `/review` e `/specify-design` (quando cria/altera funcionalidade visível). `/plan`, `/tasks`, `/clarify` e `/analyze` não atualizam esta tabela; as colunas Plan/Tasks são preenchidas pelo próximo comando que atualizar a linha (o estágio é derivável da existência dos artefatos em `specs/`).
+**Quando atualizar:** ao finalizar os comandos que mudam estado de feature — `/specify`, `/specify-tech`, `/implement`, `/review` e `/specify-design` (quando cria/altera funcionalidade visível). **Todos os demais comandos** (`/plan`, `/tasks`, `/clarify`, `/analyze`, `/constitution`, `/taskstoissues`) não atualizam esta tabela; as colunas Plan/Tasks são preenchidas pelo próximo comando que atualizar a linha (o estágio é derivável da existência dos artefatos em `specs/`).
 
 ---
 

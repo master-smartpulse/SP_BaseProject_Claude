@@ -1,8 +1,8 @@
 # Constituição do Projeto
 
-**Versão:** 1.5.0  
+**Versão:** 1.5.1  
 **Ratificada em:** a definir — preencher ao adotar o template em um projeto (o histórico de versões abaixo refere-se ao template-base)  
-**Última emenda:** 2026-07-11 — v1.1.0: Stack Padrão TypeScript (Regra Geral 6); v1.2.0: Regra Geral 3 condicional, Checklist condicional por aplicação, Tipo web+mobile; v1.3.0: `no-explicit-any` como error (Princípio 2); v1.4.0: review.md sancionado (Regra Geral 2), gatilho de atualização de estado restrito e DoD operacional (Princípio 8); v1.5.0: regra de dispensa do UseCase para CRUD trivial e papel de entidade dos modelos Prisma (Princípio 1), testes obrigatórios no CI (Princípio 7), TDD por história (Princípio 5)
+**Última emenda:** 2026-07-11 — v1.1.0: Stack Padrão TypeScript (Regra Geral 6); v1.2.0: Regra Geral 3 condicional, Checklist condicional por aplicação, Tipo web+mobile; v1.3.0: `no-explicit-any` como error (Princípio 2); v1.4.0: review.md sancionado (Regra Geral 2), gatilho de atualização de estado restrito e DoD operacional (Princípio 8); v1.5.0: dispensa do UseCase para CRUD trivial e entidades = modelos Prisma (Princípio 1), testes obrigatórios no CI (Princípio 7), TDD por história (Princípio 5); v1.5.1: esclarecimentos — use-cases/ condicionado à Dispensa nos barrels/validação/checklist (Princípio 1), item de CI no Checklist de Conformidade, /taskstoissues e /constitution classificados no gatilho de atualização (Princípio 8)
 
 ---
 
@@ -51,11 +51,11 @@ Todo o trabalho de desenvolvimento DEVE estar alinhado a estes princípios, salv
 
 **Justificativa:** Permite testabilidade, manutenção e baixo acoplamento sem impor boilerplate onde não há domínio. Cada camada tem uma única responsabilidade e as dependências fluem para dentro.
 
-**DEVE:** Cada subpasta de módulo (controllers/, services/, repositories/, use-cases/, dto/) DEVE ter arquivo `index.ts` (barrel exports). Cada use case em `use-cases/{action-name}/` DEVE ter seu próprio `index.ts`.
+**DEVE:** Cada subpasta de módulo (controllers/, services/, repositories/, dto/ — e use-cases/ quando o módulo tiver use cases, ver Dispensa acima) DEVE ter arquivo `index.ts` (barrel exports). Cada use case em `use-cases/{action-name}/` DEVE ter seu próprio `index.ts`.
 
 **DEVE:** Todo use case DEVE implementar a interface `IUseCase<Input, Output>` com método `execute(params: Input): Promise<Output>`.
 
-**Validação:** Todo módulo em `backend/src/modules/` (ou equivalente no seu projeto) DEVE seguir a estrutura padrão com diretórios controllers/, services/, use-cases/, repositories/ e dto/, cada um com index.ts.
+**Validação:** Todo módulo em `backend/src/modules/` (ou equivalente no seu projeto) DEVE seguir a estrutura padrão com diretórios controllers/, services/, repositories/ e dto/ — e use-cases/ quando o módulo tiver use cases (Dispensa acima) — cada um com index.ts.
 
 ---
 
@@ -165,7 +165,7 @@ _Aplica-se a aplicações backend; features sem backend não geram estas obriga�
 
 **Justificativa:** Facilita onboarding, reduz silos de conhecimento, torna decisões rastreáveis e mantém o estado do produto e da implementação visível para lançamento e operação.
 
-**Validação:** Documentação Swagger DEVE estar atualizada. Todas as specs DEVE seguir os templates em `templates/`. FEATURE_LIST e IMPLEMENTATION_STATUS DEVE ser atualizados quando features ou progresso de implementação mudarem — os comandos que mudam estado de feature (`/specify`, `/specify-tech`, `/implement`, `/review` e `/specify-design` quando cria/altera funcionalidade visível) DEVEM atualizá-los ao concluir; `/plan`, `/tasks`, `/clarify`, `/analyze` e `/constitution` não geram essa obrigação (o estágio é derivável dos artefatos em `specs/`). A completude e a Definição de Pronto seguem a fórmula operacional definida em `IMPLEMENTATION_STATUS.md` (% = tasks [X]/total; PRONTA = 100% + review APROVADO com verificação executável).
+**Validação:** Documentação Swagger DEVE estar atualizada. Todas as specs DEVE seguir os templates em `templates/`. FEATURE_LIST e IMPLEMENTATION_STATUS DEVE ser atualizados quando features ou progresso de implementação mudarem — os comandos que mudam estado de feature (`/specify`, `/specify-tech`, `/implement`, `/review` e `/specify-design` quando cria/altera funcionalidade visível) DEVEM atualizá-los ao concluir; **todos os demais comandos** (`/plan`, `/tasks`, `/clarify`, `/analyze`, `/constitution`, `/taskstoissues`) não geram essa obrigação (o estágio é derivável dos artefatos em `specs/`). A completude e a Definição de Pronto seguem a fórmula operacional definida em `IMPLEMENTATION_STATUS.md` (% = tasks [X]/total; PRONTA = 100% + review APROVADO com verificação executável).
 
 ---
 
@@ -243,8 +243,9 @@ Toda implementação de feature DEVE verificar. Itens marcados com condição ("
 - [ ] Se houver backend: camadas da Clean Architecture respeitadas, sem bypass
 - [ ] Se houver backend: Padrão Repository para todo acesso a dados
 - [ ] Se houver backend: contratos de API definidos e Documentação Swagger atualizada (Princípio 4)
-- [ ] Se houver backend: index.ts em controllers, services, repositories, use-cases, dto (Princípio 1)
-- [ ] Se houver backend: use cases implementam IUseCase (Princípio 1)
+- [ ] Se houver backend: index.ts em controllers, services, repositories, dto e — quando existir — use-cases (Princípio 1)
+- [ ] Se houver backend: use cases, quando existirem, implementam IUseCase (Princípio 1; CRUD trivial pode dispensá-los)
+- [ ] CI verde: pipeline executa lint, type-check, testes e build (Princípio 7)
 - [ ] Se houver banco de dados: esquema em inglês (Regras Gerais)
 - [ ] Se houver frontend web: alinhado ao design system (design-boilerplate quando existir — Regras Gerais); dados via repository hooks
 - [ ] Se houver mobile: credenciais em armazenamento seguro; estados offline tratados; dados via repository hooks (docs/arquitetura.md, seção Mobile)
